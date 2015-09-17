@@ -1,0 +1,364 @@
+
+<!-- saved from url=(0093)https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab4_CerrojosReentrantesEnJava/PC_lab4.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Cerrojos reentrantes en Java</title>
+
+<link rel="stylesheet" href="./4. Cerrojos reentrantes en Java_files/estilo.css" type="text/css">
+</head>  
+<body bgcolor="#FFFFFF" text="#000000" marginwidth="0" marginheight="1" topmargin="1" leftmargin="0" rightmargin="0">
+
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+  <tbody><tr>
+    <td align="center">
+	    <h2>Departamento de Sistemas Informáticos y Computación<br>
+            Facultad de Informática, Universidad Complutense de Madrid</h2>
+		<h2>Programación Concurrente</h2>
+    </td>
+  </tr>
+</tbody></table>
+
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+  <tbody><tr>
+    <td>
+      <center><h3>Práctica 4: Cerrojos reentrantes en Java</h3>
+    </center></td>
+  </tr>
+</tbody></table>
+
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">OBJETIVOS</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./4. Cerrojos reentrantes en Java_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+<p>
+El objetivo de esta práctica es introducir al alumno en la noción de cerrojos reentrantes.
+</p>
+</td>
+</tr>
+<tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab4_CerrojosReentrantesEnJava/PC_lab4.html#"><img src="./4. Cerrojos reentrantes en Java_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">ENUNCIADO</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./4. Cerrojos reentrantes en Java_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+
+<h3>Introducción</h3>
+
+<p>Al estudiar el código del <tt>MonitorPrioridadEscritores</tt> de la última
+práctica podemos hacernos las siguientes preguntas:</p>
+
+<ul>
+
+<li>¿Qué pasaría si un escritor que está dentro (es decir, que ha invocado
+<tt>entrarEscribir</tt> pero todavía no ha invocado <tt>salirEscribir</tt>)
+intenta entrar otra vez (es decir, invoca a <tt>entrarEscribir</tt>)?
+¡Pruébelo!</li>
+
+<li>¿Qué pasaría si, cuando un lector está dentro (es decir, ha invocado
+<tt>entrarLeer</tt> pero todavía no ha invocado <tt>salirLeer</tt>), un
+escritor intenta entrar (es decir, invoca <tt>entrarEscribir</tt>) y luego
+el lector en cuestión intenta entrar otra vez (es decir, invoca a
+<tt>entrarLeer</tt>)? ¡Pruébelo!</li>
+
+</ul>
+
+<p>
+Lo que hay en juego aquí es la noción de <em>reentrante</em>: el cerrojo de
+lectura-escritura que hemos definido no es reentrante. En esta práctica
+vamos a subsanar este problema.
+</p>
+
+<h3>Ejercicio 1: Reentrante en lectura</h3>
+
+<p>La especificación es la siguiente:</p>
+
+<p>Se concede a un hilo la posibilidad de entrar en lectura si una de las
+siguientes condiciones es cierta:</p>
+<ul>
+  <li>puede conseguir acceso en lectura (no hay ni escritor actual ni escritores en espera),</li>
+  <li>ya tiene acceso en lectura (independientemente de si hay escritores en espera)</li>
+</ul>
+
+<p>
+Modifique el código de los métodos <tt>entrarLeer</tt> y <tt>salirLeer</tt>
+de la clase <tt>MonitorPrioridadEscritores</tt> de la última práctica
+para conseguir que sea re-entrante en lectura. Nombre a la clase resultante
+<tt>ReentranteLectura</tt> y guárdela en un fichero.
+Modifique también el código de la clase <tt>Lector</tt> para usar esta
+nueva facilidad, nombre a la clase resultante <tt>LectorReentrante</tt> y
+guárdela en un fichero, y a continuación compile y ejecute el nuevo programa.
+<em>Pistas</em>: mantenga la relación entre hilos y número de veces que
+han entrado (p.e. mediante un <tt>HashMap</tt>). Necesitará usar el
+metodo <tt>Thread.currentThread</tt> y almacenar su valor en una
+variable de tipo <tt>Thread</tt>.
+</p>
+
+<h3>Ejercicio 2: Reentrante en escritura</h3>
+
+<p>La especificación es la siguiente:</p>
+
+<p>Se concede a un hilo la posibilidad de entrar en escritura:</p>
+<ul>
+  <li>únicamente si ya tiene acceso en escritura</li>
+</ul>
+
+<p>
+Modifique el código de los métodos <tt>entrarEscribir</tt> y <tt>salirEscribir</tt>
+de la clase <tt>ReentranteLectura</tt> del ejercicio previo para conseguir que sea
+reentrante en escritura. Nombre a la clase resultante <tt>RenentranteEscritura</tt>
+y guárdela en un fichero.
+Modifique también el código de la clase <tt>Escritor</tt> para usar
+esta nueva facilidad, nombre a la clase resultante <tt>EscritorReentrante</tt> y
+guárdela en un fichero, y a continuación compile y ejecute el nuevo programa.
+<em>Pistas</em>: En vez de usar una variable para contar lectores, se
+puede comprobar si la estructura de datos que se añadió para contar el
+número de veces que cada hilo ha entrado en lectura está vacía. Necesitará
+usar el metodo <tt>Thread.currentThread</tt> y almacenar su valor en una
+variable de tipo <tt>Thread</tt>.
+</p>
+
+<h3>Ejercicio 3: Reentrante de lectura a escritura</h3>
+
+<p>
+Ahora queremos que un hilo que ya tiene acceso en lectura pueda conseguir
+acceso en escritura. Por tanto, ya no tenemos hilos lectores e hilos
+escritores sino hilos de tipo lector-escritor. Un hilo lector solo puede
+pasar a tener acceso en escritura si es el único lector (se podría encapsular
+el cálculo de esta condición en un método que devolviera un booleano).
+</p>
+
+<p>
+Modifique el código de la clase <tt>RenentranteEscritura</tt> del ejercicio
+previo para conseguir que sea reentrante de lectura a escritura. Nombre a la
+clase resultante <tt>ReentranteLecturaAEscritura</tt> y guárdela en un fichero.
+Cree una nueva clase de hilo llamada <tt>LectorEscritor</tt>
+que use esta nueva facilidad, modifique el código de la clase
+<tt>LectoresEscritores</tt> para que utilice esta nueva clase de hilo
+en vez de las clases <tt>Lector</tt> y <tt>Escritor</tt> (nombre a la clase
+resultante <tt>LectoresEscritoresReentrantes</tt> y guárdela en un fichero),
+y a continuación compile y ejecute el nuevo programa.
+</p>
+
+<h3>Ejercicio 4: Reentrante de escritura a lectura</h3>
+
+<p>
+Ahora queremos que un hilo que ya tiene acceso en escritura pueda conseguir
+acceso en lectura. Obsérvese que no es peligroso conceder el acceso en lectura
+a un hilo que ya tiene acceso en escritura siempre que lo pida (es decir, sin
+condiciones).
+</p>
+
+<p>
+Modifique el código de la clase <tt>RenentranteLecturaAEscritura</tt> del
+ejercico previo para conseguir que sea reentrante de escritura a lectura.
+Nombre a la clase resultante <tt>ReentranteTotal</tt> y guárdela en un fichero.
+Modifique también el código de la clase <tt>LectorEscritor</tt> para usar
+esta nueva facilidad y a continuación compile y ejecute el nuevo programa.
+</p>
+
+<h3>Para rematar</h3>
+
+<p>
+Cuando se protege una sección crítica que puede lanzar excepciones, se tiene que
+asegurar que el cerrojo se libera al lanzarse una excepción. Por ejemplo,
+en la clase <tt>Lector</tt>, deberíamos ejecutar la sección crítica dentro de un
+bloque <tt>try</tt> seguido por un bloque <tt>finally</tt> en el que invocamos a
+<tt>salirLeer</tt>. Del mismo modo, en el bloque <tt>finally</tt> de la clase
+<tt>Escritor</tt> deberíamos invocar a <tt>salirEscribir</tt> y en el de la clase
+<tt>LectorEscritor</tt> a <tt>salirLeer</tt> o <tt>salirEscribir</tt> dependiendo
+del método llamado antes de entrar en la sección crítica. <em>Nota</em>: véase
+tambien la construcción de Java7
+<a href="http://docs.oracle.com/javase/7/docs/technotes/guides/language/try-with-resources.html"><tt>try-with-resources</tt></a>.
+</p>
+
+<h3>Organización del código (de los cuatro ejercicios)</h3>
+<p>
+Después de conseguir una solución que funcione, en programación en general
+es bastante habitual cambiar el código para conseguir un programa con la misma
+funcionalidad pero con una estructura mejor (más legible, más mantenible, más
+facilmente extensible etc.). A la actividad de introducir modificaciones que
+cambian la estructura sin cambiar  la funcionalidad se le suele llamar
+<em>refactoring</em>.
+</p>
+
+<p></p>
+En esta línea, se aconseja estructurar el código según las siguientes pautas:
+<p></p>
+<ul>
+  <li>Encapsular el cálculo de las condiciones cuya negación se utiliza para
+      poner un hilo en espera en dos métodos, <tt>puedeAccederEnLectura</tt> y
+	  <tt>puedeAccederEnEscritura</tt>, cada uno de los cuales devuelva un
+	  booleano. Siendo más preciso, se puede agrupar por un lado las
+	  condiciones que necesitan un <tt>while</tt> (recuerde la política de
+	  <em>signal and continue</em>) y por otro lado las condiciones por las
+	  cuales un <tt>if</tt> es suficiente: las que comprueben si el hilo
+	  ya tiene acceso en lectura o escritura, condición que no puede cambiar
+	  mientras el hilo está en un estado de espera.</li>
+  <li>Utilizar un método que devuelva el número de accesos en lectura
+      que ha hecho un hilo accediendo a la estructura de datos mencionada en
+	  la pista del ejercicio 1 (y devolviendo 0 cuando no ha tenido acceso
+	  en lectura).</li>
+  <li>Encapsular el cálculo de las condiciones de si hay lectores,
+      si hay un escritor, si el hilo actual es escritor, si el hilo actual es
+	  lector, se el hilo actual es el único lector etc. en métodos que
+	  devuelvan un booleano (esta pauta es menos importante que los
+	  anteriores).</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>Entrega</h3> 
+
+La entrega consta de los siguientes elementos:
+<ul>
+	<li>los ficheros fuentes:
+	    <tt>ReentranteLectura.java</tt>,
+	    <tt>ReentranteEscritura.java</tt>,
+	    <tt>ReentranteLecturaAEscritura</tt>
+	  y <tt>ReentranteTotal.java</tt>.
+    </li>
+	<li>los ficheros fuentes:
+		<tt>LectorReentrante.java</tt>,
+	    <tt>EscritorReentrante.java</tt>,
+	    <tt>LectorEscritor.java</tt> (tal como está al final del ejercicio 4)
+	  y <tt>LectoresEscritoresReentrantes.java</tt>.
+	</li>
+	<li>una muy breve memoria, con los nombres de los miembros del grupo de prácticas,
+	    explicando sus soluciones tal y como pedidas en los distintos apartados.
+	</li>
+</ul>
+todo puesto dentro de una sola carpeta llamada <tt>Práctica4</tt>, comprimido con zip y subido
+a Campus Virtual antes del miercoles 8 de mayo (es decir, antes de las 12 de la noche del martes).
+<br><hr><br>
+<b>Consultas:</b> En horas de tutoría. Fuera de este horario deberá formular las
+   preguntas a través de correo electrónico (<tt>simon.pickin@fdi.ucm.es</tt>).
+
+</td></tr><tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab4_CerrojosReentrantesEnJava/PC_lab4.html#"><img src="./4. Cerrojos reentrantes en Java_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">ENLACES</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./4. Cerrojos reentrantes en Java_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><p></p><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+<h3>En inglés</h3>
+<ul>
+  <li>Documentación oficial (de Oracle o del Java Community Process)
+    <ul>
+	 <li><a href="http://docs.oracle.com/javase/7/docs/api/">Especificación del API de Java SE7</a></li>
+     <li><a href="http://docs.oracle.com/javase/tutorial/essential/concurrency/procthread.html">Tutorial de Java</a></li>
+    </ul>
+  </li>
+  <li>Tutoriales/articulos de IBM DevloperWorks
+    <ul>
+	 <li><a href="http://www.ibm.com/developerworks/java/tutorials/j-threads/">"Introduction to Java threads"</a></li>
+ 	</ul>
+  </li>
+  <li>Libros disponibles en forma electrónica en la biblioteca:
+    <ul>
+     <li><a href="http://proquest.safaribooksonline.com/0321349601">"Java Concurrency in Practice"</a> Brian Goetz, Tim Peierls et al. 2006</li>
+	 <li><a href="http://proquest.safaribooksonline.com/9780470093559">"Concurrency: State Models &amp; Java Programs"</a>, Jeff Magee, Jeff Kramer 2006</li>
+     <li><a href="http://proquest.safaribooksonline.com/0201310090">"Concurrent Programming in Java: Design Principles and Patterns"</a> Doug Lea 2000</li>
+    </ul>
+  </li>
+ <!-- NO ENCUENTRO EL CHISTE
+  <li><a href="http://www.youtube.com/watch?v=KOdnUSEbQ0Y">Chiste sobre <em>reentry</em></a> en la pelicula "The Spy Who Loved Me" (cita 3 del video)<sup><a href="#fn1" id="r1">[1]</a></sup></li>.
+-->
+</ul>
+<h3>En español</h3>
+<ul>
+  <li>Documentación oficial de Oracle
+    <ul>
+     <li><a href="http://devel.no-ip.org/programming/languages/java/tutorial/essential/concurrency/index.html">Traducción (parcial y bastante mala) del tutorial de Java</a></li>
+    </ul>
+  </li>
+  <li>Tutoriales/articulos de IBM DevloperWorks
+    <ul>
+     <li><a href="http://www.ibm.com/developerworks/ssa/library/j-5things15/index.html">"5 cosas que no sabía sobre...programación Java multithread"</a></li>
+    </ul>
+  </li>
+  <li>Tutorial de Agustín Froufe
+    <ul>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-creacion_y_control_de_threads/3938-141">Creación y control de threads</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-arrancar_y_parar_threads/3938-142">Arrancar y parar threads</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-suspender_y_reanudar_threads/3938-143">Suspender y reanudar threads</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-estados_de_un_thread/3938-144">Estado de un thread</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-scheduling/3938-145">Scheduling</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-prioridades_demonios/3938-146">Prioridades, demonios</a></li>
+    </ul>
+  </li>
+  <li><a href="http://zarza.usal.es/~fgarcia/docencia/poo/01-02/trabajos/S3T3.pdf">Apuntes de la Universidad de Salamanca sobre hilos en Java</a></li>
+  <li>Libros disponibles en la biblioteca:
+    <ul>
+	  <li>"Programación en Java 5.0", James P. Cohoon, Jack W. Davidson</li>
+    </ul>
+  </li>
+</ul>
+<!--
+<p id="fn1" style="font-size:10px"><a href="#r1">[1]</a> Roger Moore es bastante modesto: dijo en una entrevista
+&quot;He construido una carrera entera de dos gestos: cejas arriba y cejas abajo&quot;.
+-->
+</td>
+</tr>
+
+<tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab4_CerrojosReentrantesEnJava/PC_lab4.html#"><img src="./4. Cerrojos reentrantes en Java_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<br>
+<br>
+<br>
+
+  
+  
+</body></html>

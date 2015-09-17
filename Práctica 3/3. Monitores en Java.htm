@@ -1,0 +1,376 @@
+
+<!-- saved from url=(0083)https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab3_MonitoresEnJava/PC_lab3.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Monitores en Java</title>
+
+<link rel="stylesheet" href="./3. Monitores en Java_files/estilo.css" type="text/css">
+</head>  
+<body bgcolor="#FFFFFF" text="#000000" marginwidth="0" marginheight="1" topmargin="1" leftmargin="0" rightmargin="0">
+
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+  <tbody><tr>
+    <td align="center">
+	    <h2>Departamento de Sistemas Informáticos y Computación<br>
+           Facultad de Informática, Universidad Complutense de Madrid</h2>
+		<h2>Programación Concurrente</h2>
+    </td>
+  </tr>
+</tbody></table>
+
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+  <tbody><tr>
+    <td>
+      <center><h3>Práctica 3: Monitores en Java</h3>
+    </center></td>
+  </tr>
+</tbody></table>
+
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">OBJETIVOS</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./3. Monitores en Java_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+<p>
+El objetivo de esta práctica es que el alumno aprenda a utilizar monitores como herramienta 
+para sincronizar la ejecución concurrente de hilos.
+</p>
+</td>
+</tr>
+<tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab3_MonitoresEnJava/PC_lab3.html#"><img src="./3. Monitores en Java_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">ENUNCIADO</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./3. Monitores en Java_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+
+<h3 align="center">Part I: la cena de los filósofos</h3>
+
+<p>
+El fichero <a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab3_MonitoresEnJava/MonitorFilosofos.java"><tt>MonitorFilosofos.java</tt></a>,
+contiene una solución del clásico problema de la comida de los filosofos en la
+que la sincronización se logra con un monitor, evitando de esta manera
+el bloqueo o <em>deadlock</em> (es la solución presentada en la clase de teoría).
+
+El fichero <a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab3_MonitoresEnJava/ComidaFilosofos.java"><tt>ComidaFilosofos.java</tt></a> contiene
+el código necesario para llevar a cabo una simulación del problema de la comida
+de los filósofos utilizando la clase <tt>MonitorFilosofos</tt>.</p>
+
+<p>Compile y ejecute la aplicación contenida en estos dos ficheros y estudie su
+código fuente.</p>
+
+<h3>Ejercicio 1: versión equitativa</h3>
+
+<p>Consideremos si esta solución es equitativa en el sentido siguiente:
+¿Puede producirse la inanición? (es decir, la situación en que un filósofo
+pasa un tiempo infinito en el estado hambriento sin nunca llegar a comer)?
+Explique cómo.
+ 
+</p><p>Pista:
+<em>hablando metafóricamente (y antropomórficamente),
+considere el caso de dos vecinos malvados y compinchados.</em>
+</p>
+
+<p>Ahora, modifique los métodos <tt>prueba()</tt>, <tt>putForks()</tt>
+y <tt>takeForks()</tt> de la clase <tt>MonitorFilosofos</tt> para que el
+monitor implemente una solución equitativa.
+</p>
+
+<p>Pista:
+<em>Hay distintas maneras de resolver este problema. Aquí, se pide
+introducir un nuevo estado, famélico (STARVING); un filósofo
+entra en ese estado si, cuando uno de sus vecinos suelta el tenedor,
+tiene hambre, pero no puede comer porque el otro tenedor está en uso.
+También se tienen que añadir las reglas siguientes: un filósofo hambriento
+no puede comer (ponerse en el estado EATING) si tiene un vecino famélico
+(STARVING). Tampoco puede ponerse famélico si uno de sus vecinos ya lo
+está.
+
+Para ello, se propone extender el
+método <tt>prueba()</tt> para que se ocupe de los cambios de estado
+hacia el estado STARVING, además de los cambios de estado hacia el estado
+EATING. En esta solución, por tanto, el único cambio necesario en los métodos
+<tt>putForks()</tt> y <tt>takeForks()</tt> es la adición de un parámetro extra
+(un booleano) a las llamadas al método <tt>prueba()</tt>.
+</em>
+</p>
+
+<p>
+Debe imprimirse un mensaje en pantalla cuando un filósofo
+se pone en el estado famélico (STARVING). Guarde la clase modificada en un
+fichero llamado <tt>MonitorFilosofos_equ.java</tt>
+</p>
+
+<h3>Ejercicio 2: versión equitativa y más eficiente</h3>
+<p>
+Cuando una clase Java se utiliza como monitor, como en el último
+ejercicio, se está haciendo uso de la variable de condición anónima que está
+asociada a cada clase Java (una sola cola aunque las condiciones sean distintas).
+La solución del ejercicio 1 es ineficiente porque se tiene que
+notificar a todos los filósofos (<tt>notifyAll</tt>) cada vez que un
+filósofo suelta sus tenedores, debido a la falta de variables de condición
+nombradas.
+</p>
+
+<p>
+Podemos emplear otra técnica de notificación para evitar despertar a
+todos los filósofos con <tt>notifyAll</tt> cada vez que un
+filósofo suelta sus tenedores. Para ello, se utiliza un array de objetos,
+llamados "de notificación", con un objeto por filósofo. Si los tenedores
+no están disponibles cuando un filósofo tiene hambre, el filósofo espera dentro
+de su objeto de notificación por un <tt>notify()</tt>. Modifique la
+clase <tt>MonitorFilosofos_equ</tt> para realizar la solución aquí
+descrita y guarde el resultado en un fichero llamado
+<tt>MonitorFilosofos_efi.java</tt> 
+</p>
+
+
+<h3 align="center">Parte II: lectores-escritores</h3>
+
+<h3>Ejercicio 3: lectores-escritores con monitores</h3>
+
+<p>
+Los ficheros 
+  <a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab3_MonitoresEnJava/LectoresEscritores.java"><tt>LectoresEscritores.java</tt></a>,
+  <a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab3_MonitoresEnJava/Lector.java"><tt>Lector.java</tt></a>,
+  <a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab3_MonitoresEnJava/Escritor.java"><tt>Escritor.java</tt></a>,
+  <a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab3_MonitoresEnJava/BaseDatos.java"><tt>BaseDatos.java</tt></a>,
+  <a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab3_MonitoresEnJava/MonitorArbitraje.java"><tt>MonitorArbitraje.java</tt></a>,
+  <a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab3_MonitoresEnJava/MonitorBasico.java"><tt>MonitorBasico.java</tt></a>,  
+contienen una solución incompleta del clásico problema de los lectores-escritores
+mediante un monitor implementado en Java. Complete el código del fichero
+<tt>MonitorBasico</tt>, utilizando la variable de condición por defecto que tiene
+una clase Java con métodos <tt>synchronized</tt>, y luego compile y ejecute la
+aplicación.
+</p>
+<p>
+Explique muy brevemente cómo funciona la notificación optimizada en su solución.
+¿Puede producirse la inanición? Explique cómo.
+</p>
+
+<h3>Ejercicio 4: lectores-escritores con prioridad de escritores</h3>
+<p>
+Modifique el fichero <tt>MonitorBasico</tt> del ejercicio 1 para dar prioridad a
+los escritores mediante la adición de una variable entera <tt>escritoresEnEspera</tt>.
+Guarde el código modificado en un fichero llamado <tt>MonitorPrioridadEscritores.java</tt>.
+Para ejecutar la aplicación modificada, habrá que introducir una modificación trivial
+en el fichero <tt>LectoresEscritores.java</tt> también.
+</p>
+<p>
+Explique muy brevemente cómo su solución consigue dar prioridad a los lectores,
+mencionando cualquier suposición que necesite hacer sobre la planificación de hilos
+en la máquina virtual de Java. ¿Se puede optimizar la notificación al igual que en
+el ejercicio 1? ¿Puede producirse la inanición? Explique cómo.
+</p>
+
+<h3>Ejercicio 5: lectores-escritores sin inanición categorica</h3>
+<p>
+Modifique el fichero <tt>MonitorPrioridadEscritores.java</tt> del ejercicio 2 para
+asegurar la ausencia de inanición tanto de escritores como de lectores mediante la
+adición de una variable booleana <tt>turnoLectores</tt>, sin perder la posibilidad
+de que los lectores sean concurrentes.
+Guarde el código modificado en un fichero llamado <tt>MonitorSinInanicionCat.java</tt>.
+Para ejecutar la aplicación modificada, habrá que introducir una modificación trivial
+en el fichero <tt>LectoresEscritores.java</tt> también.
+</p>
+<p>
+Explique muy brevemente cómo su solución consigue la ausencia de inanición categórica,
+mencionando cualquier suposición que necesite hacer sobre la planificación de hilos
+en la máquina virtual de Java. ¿Puede producirse la inanición individual? Explique
+cómo.
+</p>
+
+<h3>Ejercicio 6: lectores-escritores sin inanición individual</h3>
+<p>
+Modifique el fichero <tt>MonitorSinInanicionCat.java</tt> del ejercicio 3 para
+asegurar la ausencia de inanición individual tanto de escritores como de lectores
+mediante el reemplazo del uso de las variables <tt>escritoresEnEspera</tt> y
+<tt>turnoLectores</tt> por el de un secuenciador es decir, una clase llamado
+<tt>Secuenciador</tt> con un sólo método <tt>ticket</tt> (ver capítulo 3 de las
+transparencias) para conseguir una disciplina de FIFO. No hay que perder la
+posibilidad de que los lectores sean concurrentes (<em>pista</em>: con el FIFO,
+solo puede ocurrir si varios lectores vienen seguidos).
+Guarde el código modificado en un fichero llamado <tt>MonitorFIFO.java</tt>.
+Para ejecutar la aplicación modificada, habrá que introducir una modificación trivial
+en el fichero <tt>LectoresEscritores.java</tt> también y crear la clase 
+<tt>Secuenciador</tt>.
+</p>
+<p>
+Explique muy brevemente cómo su solución consigue la ausencia de inanición
+individual.
+</p>
+
+<br>
+<hr>
+<br>
+<b>Entrega:</b> 
+
+La entrega consta de los siguientes elementos:
+<ul>
+  <li>En un directorio llamado <tt>Parte1</tt>:
+   <ul>
+	<li>dos ficheros, llamados <tt>MonitorFilosofos_equ.java</tt> y <tt>MonitorFilosofos_efi.java</tt>,
+        en los que el código está adecuadamente comentado,
+	</li>
+	<li>el fichero <tt>ComidaFilosofos.java</tt> con el contenido modificado para tomar un
+	    segundo parámetro en la línea de comandos, donde el valor de este parámetro
+	    adicional debe ser una de las dos
+          cadenas de caracteres "<tt>equ</tt>" o "<tt>efi</tt>",
+          y en función del valor proporcionado, el programa utiliza el monitor
+	    resultado del ejercicio 1 o el monitor resultado del ejercicio 2,<br> &nbsp;
+	</li>
+   </ul>
+  </li>
+  <li>En un directorio llamado <tt>Parte2</tt>:
+   <ul>
+	<li>los cuatro ficheros fuentes:
+	    <tt>MonitorBasico.java</tt>,
+		<tt>MonitorPrioridadEscritores.java</tt>,
+        <tt>MonitorSinInanicionCat.java</tt>
+	  y <tt>MonitorFIFO.java</tt>.<br> &nbsp;
+    </li>
+   </ul>
+  </li>
+  <li>Una muy breve memoria, con los nombres de los miembros del grupo de prácticas,
+	  explicando sus soluciones tal como pedido en los distintos apartados. 
+  </li>
+</ul>
+<p>
+todo puesto dentro de una sola carpeta llamada <tt>Practica3</tt>, comprimido con zip y subido
+a Campus Virtual antes de las 10h del viernes 19 de abril del 2013.
+</p>
+<br><hr><br>
+<b>Consultas:</b> En horas de tutoría. Fuera de este horario deberá formular las
+   preguntas a través de correo electrónico (simon.pickin@fdi.ucm.es).
+
+</td></tr><tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab3_MonitoresEnJava/PC_lab3.html#"><img src="./3. Monitores en Java_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">ENLACES</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./3. Monitores en Java_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+<h3>En inglés</h3>
+<ul>
+  <li>Documentación oficial (de Oracle o del Java Community Process)
+    <ul>
+	 <li><a href="http://docs.oracle.com/javase/7/docs/api/">Especificación del API de Java SE7</a></li>
+     <li><a href="http://docs.oracle.com/javase/tutorial/essential/concurrency/procthread.html">Tutorial de Java</a></li>
+    </ul>
+  </li>
+  <li>Tutoriales/articulos de IBM DevloperWorks
+    <ul>
+	 <li><a href="http://www.ibm.com/developerworks/java/tutorials/j-threads/">"Introduction to Java threads"</a></li>
+    </ul>
+  </li>
+  <li>Libros disponibles en forma electrónica en la biblioteca:
+    <ul>
+     <li>"Java Concurrency in Practice" Brian Goetz, Tim Peierls 2006</li>
+	 <li>"Concurrency: State Models &amp; Java Programs", Jeff Magee, Jeff Kramer 2006</li>
+     <li>"Concurrent Programming in Java: Design Principles and Patterns" Doug Lea 2000</li>
+     </ul>
+  </li>
+</ul>
+<h3>En español</h3>
+<ul>
+<!-- This tutorial has too many mistakes
+  <li>Tutorial de chuidiang.com
+    <ul>
+	  <li><a href="http://www.chuidiang.com/java/hilos/hilos_java.php">Hilos en Java</a></li>
+	  <li><a href="http://www.chuidiang.com/java/hilos/sincronizar_hilos_java.php">Sincronización de hilos</a></li>
+	  <li><a href="http://www.chuidiang.com/java/hilos/wait_y_notify.php">Esperando datos: wait() y notify()</a></li>
+    </ul>
+  </li>
+-->
+  <li>Documentación oficial de Oracle
+    <ul>
+     <li><a href="http://devel.no-ip.org/programming/languages/java/tutorial/essential/concurrency/index.html">Traducción (parcial y bastante mala) del tutorial de Java</a></li>
+    </ul>
+  </li>
+  <li>Tutoriales/articulos de IBM DevloperWorks
+    <ul>
+     <li><a href="http://www.ibm.com/developerworks/ssa/library/j-5things15/index.html">"5 cosas que no sabía sobre...programación Java multithread"</a></li>
+    </ul>
+  </li>
+  <li>Tutorial de Agustín Froufe
+    <ul>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-creacion_y_control_de_threads/3938-141">Creación y control de threads</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-arrancar_y_parar_threads/3938-142">Arrancar y parar threads</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-suspender_y_reanudar_threads/3938-143">Suspender y reanudar threads</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-estados_de_un_thread/3938-144">Estado de un thread</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-scheduling/3938-145">Scheduling</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-prioridades_demonios/3938-146">Prioridades, demonios</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-comunicacion_entre_threads/3938-148">Comunicación entre Threads</a></li> 
+ </ul>
+  </li>
+  <li><a href="http://zarza.usal.es/~fgarcia/docencia/poo/01-02/trabajos/S3T3.pdf">Apuntes de la Universidad de Salamanca</a></li>
+  <li>Libros disponibles en la biblioteca:
+    <ul>
+	  <li>"Programación en Java 5.0", James P. Cohoon, Jack W. Davidson</li>
+    </ul>
+  </li>
+</ul>
+
+</td>
+</tr>
+<tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab3_MonitoresEnJava/PC_lab3.html#"><img src="./3. Monitores en Java_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<br>
+<br>
+<br>
+
+  
+  
+</body></html>

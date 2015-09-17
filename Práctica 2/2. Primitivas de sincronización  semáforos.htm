@@ -1,0 +1,263 @@
+
+<!-- saved from url=(0084)https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab2_SemaphoresEnJava/PC_lab2.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Primitivas de sincronización: semáforos</title>
+
+<link rel="stylesheet" href="./2. Primitivas de sincronización  semáforos_files/estilo.css" type="text/css">
+</head>  
+<body bgcolor="#FFFFFF" text="#000000" marginwidth="0" marginheight="1" topmargin="1" leftmargin="0" rightmargin="0">
+
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+  <tbody><tr>
+    <td align="center">
+	    <h2>Departamento de Sistemas Informáticos y Computación<br>
+           Facultad de Informática, Universidad Complutense de Madrid</h2>
+		<h2>Programación Concurrente</h2>
+    </td>
+  </tr>
+</tbody></table>
+
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+  <tbody><tr>
+    <td>
+      <center><h3>Práctica 2: Sincronización mediante semáforos</h3>
+    </center></td>
+  </tr>
+</tbody></table>
+
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">OBJETIVOS</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./2. Primitivas de sincronización  semáforos_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+El objetivo de esta práctica es que el alumno aprenda a utilizar semáforos como herramienta 
+para sincronizar la ejecución concurrente de hilos.
+<br><br>
+</td>
+</tr>
+<tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab2_SemaphoresEnJava/PC_lab2.html#"><img src="./2. Primitivas de sincronización  semáforos_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">ENUNCIADO</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./2. Primitivas de sincronización  semáforos_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+
+<p>
+El fichero <a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab2_SemaphoresEnJava/LectoresEscritores.java"><tt>LectoresEscritores.java</tt></a>,
+contiene una aplicación que simula un conjunto de lectores y un conjunto
+de escritores que acceden a una base de datos común.
+</p>
+<p>
+La aplicación utiliza las classes <tt>Semaphore</tt> y <tt>Pecusa</tt>,
+donde la última hace uso, a su vez, de la primera. Estas clases se encuentran en
+los ficheros <a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab2_SemaphoresEnJava/Semaphore.java"><tt>Semaphore.java</tt></a> y
+<a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab2_SemaphoresEnJava/Pecusa.java"><tt>Pecusa.java</tt></a>.
+</p> 
+
+<p>Compile y ejecute esta aplicación y estudie su código fuente.</p>
+
+<h3>Ejercicio 1: baños unisex</h3>
+
+<p>Inspirándose en la aplicación <tt>LectoresEscritores</tt> implemente la
+aplicación siguiente:</p>
+
+<p>Se trata de modelar unos baños unisex en una empresa, es decir baños que pueden
+utilizar tanto hombres como mujeres, pero para el acceso a los cuales se imponen
+las siguientes restricciones (al contrario que en los baños de la vieja serie
+estadounidense Ally McBeal):</p>
+<ul>
+   	<li>No puede haber un hombre y una mujer en los baños a la vez</li>
+	<li>No puede haber más de 4 personas en los baños a la vez</li>
+</ul>
+
+<p>De manera parecida a la aplicación <tt>LectoresEscritores</tt>, modele la
+estancia en los baños por un mensaje enviado a pantalla
+(¡suficientemente púdico!) que
+identifique al hombre o mujer que ha entrado en los baños, junto con un
+<tt>sleep</tt> aleatorio. También hará falta un mensaje para indicar que un
+hombre o una mujer ha salido de los baños, otra vez identificando al hombre
+o mujer en cuestión. Del mismo modo, modele el tiempo en que el hombre o
+mujer está trabajando, es decir, fuera de los baños, con otro <tt>sleep</tt>
+aleatorio.
+</p>
+<p>
+Su solución debe tomar la forma de una clase <tt>Persona</tt>, las
+instancias de la cual serán hilos, con métodos <tt>trabajar</tt>
+y <tt>utilizarServicios</tt>, junto con una clase <tt>ServiciosUnisex</tt>,
+la clase principal en cuyo código se arranca cinco, por ejemplo, hilos
+<tt>Persona</tt>. Su solución debe utilizar las clases <tt>Semaphore</tt>
+y <tt>Pecusa</tt> proporcionadas (sin cambiar en nada su código) y no debe
+utilizar la instrucción Java <tt>synchronized</tt>.
+</p>
+
+<h3>Ejercicio 2: baños unisex equitativos</h3>
+
+<p>¿Es equitativa su solución al ejercicio 1 en el sentido siguiente? ¿puede
+producirse la situación
+en que un hombre o una mujer espera un tiempo infinito para acceder a los
+baños (<em>starvation</em>)? Razone su respuesta. Si su solución no es equitativa,
+modifique la clase <tt>Persona</tt> para que lo sea (<em>Pista: utilice otro semáforo
+como torniquete en la entrada de los baños</em>)
+</p>
+<p>
+Su solución debe tomar la forma de una clase <tt>PersonaNoStarve</tt> que
+hereda de la clase <tt>Persona</tt>, sobreescribiendo su método principal,
+y una versión modificada de la clase <tt>ServiciosUnisex</tt> que permite
+elegir la versión a ejecutar en función de un argumento de la línea de
+comandos que acepta las cadenas "starve" y "nostarve".
+Al igual que en el ejercicio 1, la sincronización debe hacerse con las
+clases proporcionadas (sin cambiar en nada su código) y sin utilizar la
+instrucción Java <tt>synchronized</tt>.
+</p>
+
+<h3>Ejercicio 3: la clase <tt>Semaphore</tt> del paquete <tt>java.util.concurrent</tt></h3>
+
+<p>En Java SE5 se incluyó unas bibliotecas con varias utilidades de concurrencia,
+etre ellas, semáforos. Modifique las soluciones de los ejercicios previos para que
+utilicen los métodos <tt>acquire</tt> y <tt>release</tt> de la clase
+<tt>java.util.concurrent.Semaphore</tt> en vez de los métodos <tt>P</tt> y <tt>V</tt>
+de la clase <tt>Semaphore</tt> proporcionada.</p>
+<p></p>
+<p>
+Escriba su solución en clases llamadas <tt>Persona2</tt>,
+<tt>PersonaNoStarve2</tt> y <tt>Pecusa2</tt> (ahora sí que hay que modificar la
+clase <tt>Pecusa</tt>).
+</p>
+
+<br>
+<p>Por defecto, las prácticas se harán en grupos de dos. Para solicitar hacer esta
+práctica de manera individual, envíe un e-mail al profesor cuanto antes.</p>
+
+<br>
+<hr>
+<br>
+<b>Entrega:</b> 
+
+La entrega consta de los siguientes elementos:
+<ul>
+	<li>Los ficheros fuentes que contienen las clases <tt>Persona</tt>, <tt>PersonaNoStarve</tt>
+	    <tt>ServiciosUnisex</tt>, <tt>Persona2</tt>, <tt>PersonaNoStarve2</tt>, <tt>Pecusa2</tt>
+        en los que el código está adecuadamente comentado,</li>
+	<li>Los dos ficheros proporcionados <tt>Semaphore.java</tt> y <tt>Pecusa.java</tt> sin tocar,
+	    es decir, copias idénticas de los ficheros con el mismo nombre proporcionados a través
+		de esta página,</li>
+	<li>Una muy breve memoria, explicando su solución,</li>
+</ul>
+todo puesto dentro de una sola carpeta llamada <tt>Practica2</tt>, comprimido con zip y subido
+a Campus Virtual (un miembro del grupo solamente) antes del 22 de marzo del 2012 a las 10h<br>
+<br><hr><br>
+<b>Consultas:</b> En horas de tutoría. Fuera de este horario deberá formular las
+   preguntas a través de correo electrónico (simon.pickin@fdi.ucm.es).
+
+</td></tr><tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab2_SemaphoresEnJava/PC_lab2.html#"><img src="./2. Primitivas de sincronización  semáforos_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">ENLACES</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./2. Primitivas de sincronización  semáforos_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+<h3>En inglés</h3>
+<ul>
+  <li>Documentación oficial de Oracle
+    <ul>
+      <li><a href="http://docs.oracle.com/javase/7/docs/api/">Especificación del API de Java SE7</a></li>
+	  <li><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Semaphore.html">Especificación del API de Java SE7, parte "Semaphore"</a></li>
+      <li><a href="http://docs.oracle.com/javase/tutorial/essential/concurrency/procthread.html">Tutorial de Java</a></li>
+   </ul>
+  </li>
+  <li>Libros disponibles en forma electrónica en la biblioteca:
+    <ul>
+     <li>"Concurrent Programming in Java: Design Principles and Patterns" Doug Lea 2000</li>
+     <li>"Java Concurrency in Practice" Brian Goetz, Tim Peierls 2006</li>
+	 <li>"Concurrency: State Models &amp; Java Programs", Jeff Magee, Jeff Kramer 2006</li>
+     </ul>
+  </li>
+</ul>
+<h3>En español</h3>
+<ul>
+<!-- demasiados errores en este tutorial
+  <li>Tutorial de chuidiang.com
+    <ul>
+	  <li><a href="http://www.chuidiang.com/java/hilos/hilos_java.php">Hilos en Java</a></li>
+	  <li><a href="http://www.chuidiang.com/java/hilos/sincronizar_hilos_java.php">Sincronización de hilos</a></li>
+	  <li><a href="http://www.chuidiang.com/java/hilos/wait_y_notify.php">Esperando datos: wait() y notify()</a></li>
+    </ul>
+  </li>
+-->
+  <li>Tutorial de Agustín Froufe (algo anticuado)
+    <ul>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-creacion_y_control_de_threads/3938-141">Creación y control de threads</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-arrancar_y_parar_threads/3938-142">Arrancar y parar threads</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-suspender_y_reanudar_threads/3938-143">Suspender y reanudar threads</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-estados_de_un_thread/3938-144">Estado de un thread</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-scheduling/3938-145">Scheduling</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-prioridades_demonios/3938-146">Prioridades, demonios</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-comunicacion_entre_threads/3938-148">Communicación entre threads</a></li>
+    </ul>
+  </li>
+  <li><a href="http://zarza.usal.es/~fgarcia/docencia/poo/01-02/trabajos/S3T3.pdf">Apuntes de la Universidad de Salamanca</a></li>
+</ul>
+
+</td>
+</tr>
+<tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab2_SemaphoresEnJava/PC_lab2.html#"><img src="./2. Primitivas de sincronización  semáforos_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<br>
+<br>
+<br>
+
+  
+  </body></html>

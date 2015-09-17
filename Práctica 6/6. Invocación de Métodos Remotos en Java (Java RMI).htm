@@ -1,0 +1,573 @@
+
+<!-- saved from url=(0075)https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab6_JavaRMI/PC_lab6.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Invocación de Métodos Remotos en Java (Java RMI) </title>
+
+<link rel="stylesheet" href="./6. Invocación de Métodos Remotos en Java (Java RMI)_files/estilo.css" type="text/css">
+</head>  
+<body bgcolor="#FFFFFF" text="#000000" marginwidth="0" marginheight="1" topmargin="1" leftmargin="0" rightmargin="0">
+
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+  <tbody><tr>
+    <td align="center">
+	    <h2>Departamento de Sistemas Informáticos y Computación<br>
+            Facultad de Informática, Universidad Complutense de Madrid</h2>
+		<h2>Programación Concurrente</h2>
+    </td>
+  </tr>
+</tbody></table>
+
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+  <tbody><tr>
+    <td>
+      <center><h3>Práctica 6: Java RMI</h3>
+    </center></td>
+  </tr>
+</tbody></table>
+
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">OBJETIVOS</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./6. Invocación de Métodos Remotos en Java (Java RMI)_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+	
+<p>El objetivo de esta práctica es introducir al alumno en la invocación de métodos
+remotos (RMI) en Java.</p>
+
+</td>
+</tr>
+<tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab6_JavaRMI/PC_lab6.html#"><img src="./6. Invocación de Métodos Remotos en Java (Java RMI)_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">INTRODUCCIÓN</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./6. Invocación de Métodos Remotos en Java (Java RMI)_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+
+<h3>De RPC a <em>middleware</em> basado en objetos y Java RMI</h3>
+
+<p>
+El sistema conocido como Llamada a Procedimiento Remoto o
+<em>Remote Procedure Call</em> (RPC) extiende la noción de
+llamada a procedimiento a la situación en la que el proceso llamante y el
+procedimiento llamado tienen distinto espacio de direcciones y, por tanto,
+pueden estar ejecutándose en distintos ordenadores. RPC se implementa encima
+de un protocolo de transporte, por lo que los programadores no necesitan
+entender los detalles de la interfaz con la red. Una diferencia
+importante entre las llamadas a procedimiento local y remoto es que las llamadas
+del último tipo pueden fallar debido a problemas de red impredicibles y, cuando
+ocurre un fallo de estas características, el proceso llamante tiene que tratarlo
+sin saber si el procedimiento remoto se ha ejecutado o no (lo habitual es la
+semántica de como-mucho-una-vez).
+Los <em>middleware</em> basados en objetos, de los que Java RMI es un ejemplo,
+extienden a los RPC con el conocimiento de objetos, tipos e interfaces.
+</p>
+<p>
+Java <em>Remote Method Invocation</em> (Java RMI) es un sistema que permite la
+invocación de métodos entre objetos Java de distintos JVM (máquinas
+virtuales Java) que, por tanto, pueden estar ejecutándose en distintos ordenadores.
+El sistema consta de una API y el soporte necesario &#8208; recolección de basura
+distribuida, el <em>Java Remote Method Protocol</em> JRMP, secuenciación de objetos
+(<em>serialization</em>) modificada,... &#8208; y consitituye el
+mecanismo principal que ofrece el lenguaje Java para la programación de sistemas
+distribuidos (al menos en redes locales).
+</p>
+
+<h3>Características destacables de Java RMI</h3>
+
+<p>
+La diferencia más importante entre Java RMI y los middleware basados
+en objetos como CORBA es la posibilidad que ofrece RMI de usar la carga dinámica
+de clases, lo que permite desacoplar
+la interfaz de un objeto remoto de su implementación. De este modo, Java RMI
+permite el polimorfismo, ya que permite que el tipo pasado realmente sea un subtipo
+del tipo declarado, que por tanto puede ser un tipo desconocido para el código que lo recibe.
+Para lograrlo, al hacer el <em>marshalling</em>, el sistema RMI
+utiliza una variante de la secuenciación (<em>serialization</em>) de objetos habitual
+de Java, en la que se anota el flujo de salida con la
+información sobre el tipo exacto del objeto en cuestión junto con la localización
+de su código de implementación en un
+<em><a href="http://docs.oracle.com/javase/7/docs/technotes/guides/rmi/codebase.html">codebase</a></em>
+cuya localización se ha pasado previamente (normalmente a la hora de lanzar la aplicación
+con la opción de línea de comandos
+<tt>-Djava.rmi.server.codebase=&lt;<em>URL</em>&gt;</tt> o más generalmente
+<tt>-Djava.rmi.server.codebase="&lt;<em>URL1</em>&gt; &lt;<em>URL2</em>&gt;... &lt;<em>URLn</em>&gt;"</tt>).
+Cuando un objeto de un tipo previamente desconocido
+se recibe como parámetro o como resultado de una llamada RMI, el sistema
+extrae esta información del mensaje, busca el código para el objeto en el
+<em><a href="http://docs.oracle.com/javase/7/docs/technotes/guides/rmi/codebase.html#section4">codebase</a></em>
+identificado y lo carga en la JVM receptor.
+</p>
+<p>
+Otra diferencia concierne a la generación de los <em>stubs</em> del cliente y del
+servidor (el último se llama <em>skeleton</em> tanto en CORBA como en RMI). Desde
+Java 1.2 no es necesario generar el <em>skeleton</em> y, desde Java 5, tampoco es
+necesario generar el <em>stub</em> aunque, en el caso de este último, depende de la
+manera en que se quiere exportar el objeto remoto. En los dos casos, el sistema RMI
+construye automáticamente el artefacto en cuestión mediante la API de
+<em><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/reflect/package-summary.html">Reflection</a></em>.
+</p>
+
+<h3>Objetos remotos y paso de parámetros en Java RMI</h3>
+
+<p>
+Para que los objetos de una clase sean remotos, es decir que puedan llamarse
+desde otra JVM, la clase tiene que implementar una interfaz remota. Una
+interfaz remota es una interfaz
+</p>
+<ul>
+<li>que extiende a <tt>java.rmi.Remote</tt>,</li> 
+<li>cuyos métodos lanzan <tt>java.rmi.RemoteException</tt> (además de
+cualquier excepción específica de la aplicación).</li>
+</ul>
+<p>
+Dentro de la misma JVM los objetos remotos se tratan igual que otros objetos.
+</p>
+<p>
+En Java no-distribuido, la semántica del intercambio de información es
+<em>call-by-value</em> para valores de tipos primitivos y
+<em>call-by-reference</em> para valores de tipo objeto. Sin embargo, cuando
+un objeto se pasa entre JVM en Java RMI, si se trata de un objeto remoto, la
+semántica es <em>call-by-reference</em> &#8208; lo que se pasa entre los JVM es una
+referencia de objeto distribuido, o <em>stub</em> del objeto, que implementa
+las mismas interfaces remotas que el
+objeto &#8208; mientras que si se trata de un objeto normal la semántica es
+<em>call-by-value</em> &#8208; lo que se
+pasa entre los JVM es una secuenciación del objeto (una "copia profunda") &#8208;.
+Por tanto, los objetos no remotos que se pasan entre JVM tienen que
+ser instancias de una clase que implementa la interfaz
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/io/Serializable.html">Serializable</a></tt>.
+</p>
+<p>
+Respecto a los hilos que crea el sistema RMI, el comportamiento no está especificado.
+Sin embargo, las implementaciones del sistema RMI suelen crear un hilo por
+petición para peticiones que vienen de distinto JVM pero no necesariamente un hilo por
+petición en otro caso.
+</p>
+
+<h3>Exportación de objetos remotos en Java RMI</h3>
+
+<p>Para que estén disponibles remotamente los métodos declarados en la interfaz remota,
+la clase que implementa la interfaz tiene que exportar sus instancias por JRMP y
+generar el <em>stub</em> que se utilizará para comunicar con el objeto remoto.
+Esto se puede hacer de dos maneras:
+</p><ul>
+  <li>La clase que implementa la interfaz remota extiende a la clase
+    <tt><a href="http://docs.oracle.com/javase/7/docs/api/java/rmi/server/UnicastRemoteObject.html">UnicastRemoteObject.</a></tt></li>
+  <li>El <tt>main</tt> de la clase que implementa la interfaz remota llama al método
+     <tt><a href="http://docs.oracle.com/javase/7/docs/api/java/rmi/server/UnicastRemoteObject.html#exportObject%28java.rmi.Remote,%20int%29">public static Remote exportObject(Remote obj, int puerto)</a></tt>
+     de la clase <tt>UnicastRemoteObject</tt> y hace un <em>cast</em> del objeto remoto devuelto
+	 a la interfaz implementada. El segundo argumento especifíca el puerto en el que estará escuchando el
+	 servidor; un valor de 0 significa que el puerto se eligirá dinámicamente en tiempo de
+	 ejecución. ¡Cuidado con usar un puerto dinámico en presencia de cortafuegos!.
+	 El método devuelve un <em>stub</em> del objeto remoto.</li>
+</ul>
+<p></p>
+
+<h3>El problema del bootstrap y el <em>registry</em> de RMI</h3>
+
+<p>El <em>registry</em> de RMI es un servicio de nombres simplificado que constituye
+la manera más sencilla de solucionar el problema del <em>bootstrap</em> de RMI, esto es:
+solo se puede conseguir un <em>stub</em> de objeto remoto mediante una llamada a un método
+remoto pero hace falta un <em>stub</em> de objeto remoto para realizar una llamada a un método remoto.
+Este problema se soluciona con el método <tt>LocateRegistry.getRegistry</tt> (invocado
+directamente o desde un método de la clase <tt>java.rmi.Naming</tt>, que utiliza
+nombres en forma de URL para localizar y operar sobre el <em>registry</em> en un solo paso)
+que devuelve la referencia al <em>registry</em>.</p>
+
+<p>Una aplicación solo puede invocar los métodos <tt>bind</tt>, <tt>unbind</tt> y <tt>rebind</tt>
+de las clases <tt>Registry</tt> o <tt>Naming</tt> para un <em>registry</em> local,
+con el fin de evitar que un cliente remoto quite o sobreescriba
+información del registry. El método <tt>lookup</tt>, al contrario, puede invocarse
+tanto localmente como remotamente.
+</p>
+
+<h3>La seguridad en RMI y el gestor de seguridad</h3>
+
+<p>
+La seguridad es un aspecto muy importante de los sistemas distribuidos, en particular de
+los que hacen uso de código móvil. En este contexto, se suele utilizar la
+técnica conocida como <em>sandboxing</em>, que significa limitar al código que no
+es de confianza (en este caso, código bajado de una localización remota) lo que tiene
+permiso de hacer. Respecto a Java RMI, cualquier aplicación que va a utilizar la 
+facilidad de los <tt>codebase</tt> para bajar código de clases desconocidas (bien de
+stubs o bien de objetos serializados, recibidos como argumentos o como valores de retorno)
+tiene que tener un "gestor de seguridad".
+<!--
+Nótese que en el ejemplo del Ejercicio 0, a pesar de que al lanzar el servidor se asigna
+un valor a la propiedad <em>codebase</em> para que las instancias del stub se anoten con la
+información de dónde cargar el código de la clase, el cliente
+obtiene el código en cuestión del classpath, por lo que no necesita un gestor de seguridad.
+-->
+</p>
+
+<p>Una aplicación Java puede implementar una política de seguridad, es decir especificar
+categorías de acciones que se consideran violaciones de la seguridad del programa e
+impedir que se produzcan, mediante la clase
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/SecurityManager.html">SecurityManager</a></tt>,
+en cuyo caso, decimos que la aplicación tiene un
+<a href="http://docs.oracle.com/javase/tutorial/essential/environment/security.html">gestor de seguridad</a>.
+Acciones no permitidas por la política de seguridad provocan una
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/SecurityException.html">SecurityException</a></tt>.
+<!--
+Nótese que la subclase de <tt>SecurityManager</tt> llamada <tt>RMISecurityManager</tt>
+existe por razones históricas pero ya no difiere en nada de su clase madre, por lo que
+no debería usarse.
+-->
+</p>
+<p>
+Por defecto, una aplicación no tiene gestor de seguridad. Sin embargo, una
+aplicación sin gestor de seguridad no puede llevar a cabo ciertas
+operaciones, por ejemplo, la carga dinámica de clases localizadas en ordenadores
+remotos.
+Para que una aplicación tenga un gestor de seguridad, tiene que invocar al método
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/System.html#setSecurityManager%28java.lang.SecurityManager%29">System.setSecurityManager</a></tt>,
+pasándole como argumento un objeto de la clase
+<tt>SecurityManager</tt>, o bien lanzarse con la opción de línea de comandos
+<tt>-Djava.security.manager</tt>, que tiene el mismo efecto que ejecutar
+<tt>System.setSecurityManager(new SecurityManager());</tt>. El método estático
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/System.html#getSecurityManager%28%29">System.getSecurityManager()</a></tt>
+devuelve una referencia al objeto <tt>SecurityManager</tt> de la aplicación.
+</p>
+<p>
+La política de seguridad que implementa el gestor de seguridad se encapsula en un
+objeto de la clase
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/security/Policy.html">Policy</a></tt>.
+El método estático
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/security/Policy.html#getPolicy%28%29">Policy.getPolicy()</a></tt>
+devuelve una referencia al objeto <tt>Policy</tt> de la aplicación.
+Típicamente, la política de seguridad encapsulada en el objeto <tt>Policy</tt>
+se carga al arrancar la aplicación desde un fichero de configuración de
+política de seguridad, o
+<em><a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/PolicyFiles.html">policy file</a></em>.
+Para añadir la política contenida en un <em>policy file</em> llamado <tt>miPolitica</tt>
+a la política por defecto, se utiliza la opción de línea de comandos
+<tt>-Djava.security.policy=miPolitica</tt>.
+Para sustituir la política por defecto por la política contenida
+en un <em>policy file</em> llamado <tt>miPolitica</tt> se utiliza la opción de línea
+de comandos <tt>-Djava.security.policy==miPolitica</tt>.
+Una política común es dar todos los permisos a cualquier fichero local y
+ningún permiso a los ficheros bajados de localizaciones remotas mediante un
+<em>policy file</em> que contiene la instrucción siguiente:
+</p>
+<pre>grant codeBase "file:..." {
+    permission java.security.AllPermission;
+};
+</pre>
+<p>
+Una política común durante el desarrollo es dar todos los permisos a todo el mundo
+mediante un <em>policy file</em> que contiene la instrucción siguiente:
+</p>
+<pre>grant {
+    permission java.security.AllPermission;
+};
+</pre>
+<p>
+Aunque, evidentemente, no es aconsejable usar esta política en una aplicación en
+producción, es suficiente para esta práctica.
+</p>
+<p>
+La opción de línea de comandos <tt>-Djava.security.debug=access,failure</tt> permite
+ver cuáles son los permisos que requiere cada dominio de seguridad.
+</p>
+</td>
+</tr>
+<tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab6_JavaRMI/PC_lab6.html#"><img src="./6. Invocación de Métodos Remotos en Java (Java RMI)_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">ENUNCIADO</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./6. Invocación de Métodos Remotos en Java (Java RMI)_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+
+<h3>Ejercicio 0: hello world en RMI</h3>
+<p>
+El primer ejercicio consiste en leer el
+<a href="http://docs.oracle.com/javase/7/docs/technotes/guides/rmi/hello/hello-world.html">tutorial
+sobre los primeros pasos en RMI</a>. Copie, instale, compile y ejecute el código 
+correspondiente.
+</p>
+
+<h3>Ejercicio 1: servicio de chateo básico</h3>
+<p>El objetivo de este ejercicio es implementar un servidor de chateo básico.
+El servidor exporta dos operaciones:
+</p>
+<ul>
+<li><tt>inscribirse</tt>, que se utilizará para permitir a los clientes inscribirse en el servicio;</li>
+<li><tt>difundir</tt>, que se utilizará para reenviar la
+línea de caracteres enviada como argumento a todos los clientes inscritos.</li>
+</ul>
+<p>
+Después de inscribirse en el servicio, el cliente envía al servidor las líneas de texto
+que se introducen por el teclado e imprime por pantalla los mensajes que llegan desde el 
+servidor (incluyendo los suyos propios).
+</p>
+<p>
+En este primer ejercicio, basta con crear uno o dos clientes y no debe tratar los
+aspectos de concurrencia. Compile y ejecute el programa, primero en un solo ordenador y
+luego en dos ordenadores distintos. 
+</p>
+<em>Pistas</em>:
+<ul>
+  <li>El método <tt>difundir</tt> implicará la invocación de un método remoto de los
+  clientes, es decir, un <em>callback</em>. Es interestante notar que en presencia de
+  un cortafuegos, en general, los <em>callback</em> de RMI no funcionarán, ya que no
+  utilizan la misma conexión TCP que la llamada inicial (su uso provocará una execpción
+  de tipo
+  <tt><a href="http://docs.oracle.com/javase/7/docs/api/java/net/NoRouteToHostException.html">NoRouteToHostException</a></tt>
+  o
+  <tt><a href="http://docs.oracle.com/javase/7/docs/api/java/net/UnknownHostException.html">UnknownHostException</a></tt>
+  o, en algunos casos
+  <tt><a href="http://docs.oracle.com/javase/7/docs/api/java/net/ConnectException.html">ConnectException</a></tt>).
+  </li>
+</ul>
+
+<h3>Ejercicio 2: servicio de chateo con numeración de mensajes</h3>
+<p>
+En este ejercicio se pide añadir al servidor de chateo del ejercicio 1
+un contador para numerar los mensajes que llegan de los clientes. A continuación, el
+servidor difundirá el número de cada mensaje junto con su texto. El cliente imprimirá
+las dos informaciones por pantalla. Debe reemplazar el cliente interactivo del ejercicio
+previo con un cliente que envía ~100 mensajes con un <tt>sleep</tt> aleatorio entre
+envíos. Todavía no se deben tratar los aspectos de concurrencia.
+</p>
+<p>
+Compile y ejecute el programa con ~5 clientes, primero en un solo ordenador y luego
+con los clientes localizados en un ordenador distinto (o, si tiene acceso a la
+infrastructura para hacerlo, en varios ordenadores distintos). Pruebe también
+con distintos intervalos de <tt>sleep</tt>. ¿Qué es lo que observa?
+</p>
+
+<h3>Ejercicio 3: servicio de chateo <em>thread-safe</em> con <tt>synchronized</tt></h3>
+<p>
+En este ejercicio, se pide modificar la solución del ejercicio 2 para subsanar los
+problemas que se derivan de la concurrencia entre los hilos creados por el sistema RMI,
+mediante el uso de la construcción Java <tt>synchronized</tt>. Supondremos que cada
+cliente está ejecutándose en un ordenador distinto y que, en estas circumstancias,
+el sistema RMI creará un hilo por petición.
+</p>
+<p>
+Compile y ejecute el programa con ~5 clientes, primero en un solo ordenador y luego
+con los clientes localizados en un ordenador distinto (o, si tiene acceso a la
+infrastructura para hacerlo, en varios ordenadores distintos). ¿Qué es lo que observa?
+</p>
+
+<h3>Ejercicio 4: servicio de chateo <em>thread-safe</em> con rendimiento mejorado</h3>
+<p>
+En este ejercicio, se pide modificar la solución del ejercicio 3 para implementar un
+servico de chateo <em>thread-safe</em> utilizando utilidades del paquete
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/package-summary.html">java.util.concurrent</a></tt>
+en vez de la construcción Java <tt>synchronized</tt>. Además, se pide mejorar el
+rendimiento del servidor, evitando que espere innecesariamente a la hora de hacer
+los <em>callback</em>. ¿Observa alguna mejora respecto a la solución del ejercicio
+previo?
+</p>
+<em>Pistas</em>:
+<ul>
+  <li>En cuanto a las esperas innecesarias, se puede mejorar el rendimiento del servidor
+   por medio de una simulación de <em>callback</em> con comunicación asíncrona: creamos un
+   nuevo hilo por cada invocación del método de <em>callback</em> que no hace más que hacer
+   la invocación y terminar. De este modo, el servidor no tiene que esperar a que termine
+   la invocación del método de <em>callback</em> de un cliente antes de invocar el método 
+   de <em>callback</em> del siguiente cliente.
+  </li>
+  <li>En cuanto a la concurrencia, el servidor puede:
+     <ul>
+        <li>gestionar la númeración de los mensajes evitando la interferencia pero
+		    sin bloqueos; en este caso, lo más adecuado podría ser un
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/atomic/AtomicInteger.html">AtomicInteger</a></tt>,</li>
+        <li>gestionar los clientes inscritos mediante una estructura de datos que
+	        permite accesos concurrentes; en este caso, en el que recorrer la estructura
+		    es mucho más frecuente que modificarla, lo más adecuado podría ser una
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/CopyOnWriteArrayList.html">CopyOnWriteArrayList</a></tt>.</li>
+	 </ul>
+  </li>
+  <li>Si los clientes no están en el mismo ordenador que el servidor puede haber
+   múltiples hilos activos también en el cliente (aunque probablemente
+   no es el caso de la solución del ejercicio anterior con <tt>synchronized</tt>).
+   El cliente puede :
+     <ul>
+		<li>crear un hilo para recoger los mensajes de usuario e invocar al método
+		    <tt>difundir</tt>; el hilo principal puede ocuparse de escribir los
+			mensajes pendientes en pantalla en el orden correcto.</li>
+	    <li>escribir los mensajes que llegan en una estructura de datos que permite
+		    accesos concurrentes; en este caso, lo más adecuado podría ser una
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ConcurrentLinkedQueue.html">ConcurrentLinkedQueue</a></tt>,</li>
+     </ul>
+  </li>
+</ul>
+
+<h3>Ejercicio 5 (opcional): servicio de chateo <em>thread-safe</em> con log</h3>
+<p>
+En este ejercicio, se pide añadir al servidor la facilidad de escribir en un fichero
+(un log) toda la conversación que ha tenido lugar desde el lanzamiento del servidor, es decir,
+todos los mensajes enviados a los clientes inscritos, respetando el orden de
+numeración de los mensajes.
+</p>
+<em>Pistas</em>:
+<ul>
+  <li>El log puede ser un cliente que escribe en un fichero en vez de en pantalla.</li>
+</ul>
+
+<p>
+
+<br>
+</p><hr>
+<br>
+<b>Entrega:</b> 
+
+La entrega consta de los siguientes elementos:
+<ul>
+	<li>Cuatro (o, en su caso, cinco) directorios, llamados <tt>Ejercicio1</tt>, <tt>Ejercicio2</tt>,
+	    <tt>Ejercicio3</tt>, <tt>Ejercicio4</tt> y, en su caso, <tt>Ejercicio5</tt>,
+		cada uno de los
+		cuales contiene los ficheros fuente correspondientes al ejercicio en cuestión.
+    </li>
+	<li>Una muy breve memoria, con los nombres de los miembros del grupo de prácticas,
+	    explicando sus soluciones tales como pedidas.
+	</li>
+</ul>
+todo puesto dentro de una sola carpeta llamada <tt>Práctica6</tt>, comprimida con zip
+y subida a Campus Virtual antes del 31 de mayo de 2013 a las 12h.<br>
+<br><hr><br>
+<b>Consultas:</b> En horas de tutoría. Fuera de este horario deberá formular las
+   preguntas a través de correo electrónico (<tt>simon.pickin@fdi.ucm.es</tt>).
+
+</td></tr><tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab6_JavaRMI/PC_lab6.html#"><img src="./6. Invocación de Métodos Remotos en Java (Java RMI)_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">ENLACES</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./6. Invocación de Métodos Remotos en Java (Java RMI)_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+
+<tbody><tr>
+<td>
+
+<h3>En inglés</h3>
+<ul>
+  <li>Documentación oficial (de Oracle o del Java Community Process)
+    <ul>
+	 <li><a href="http://docs.oracle.com/javase/7/docs/api/">La especificación de la API de Java SE7</a></li>
+	 <li><a href="http://docs.oracle.com/javase/7/docs/technotes/guides/rmi/index.html">Documentación RMI</a>
+ 	 </li><li><a href="http://docs.oracle.com/javase/7/docs/platform/rmi/spec/rmiTOC.html">La especificación de Java RMI</a></li>
+     <li><a href="http://docs.oracle.com/javase/tutorial/rmi/">Tutorial de Java, parte RMI</a></li>
+	 <li><a href="http://docs.oracle.com/javase/7/docs/technotes/guides/rmi/faq.html">FAQ sobre RMI</a></li>
+	 <li><a href="http://www.oracle.com/technetwork/java/javase/tech/index-jsp-136424.html">Remote Method Invocation Home</a></li>
+     <li><a href="http://docs.oracle.com/javase/tutorial/essential/concurrency/procthread.html">Tutorial de Java, Concurrencia</a></li>
+     <li><a href="http://docs.oracle.com/javase/tutorial/reflect/index.html">Tutorial de Java, Reflection</a></li>
+     <li><a href="http://docs.oracle.com/javase/7/docs/technotes/guides/concurrency/overview.html">Visión general de las utilidades de concurrencia en Java SE7</a></li>
+     <li><a href="http://docs.oracle.com/javase/7/docs/technotes/guides/concurrency/index.html">Documentación sobre las utilidades de concurrencia en Java SE7</a></li>
+    </ul>
+  </li>
+  <li>Otros artículos de interés
+    <ul>
+	  <li><a href="http://www.rmiproxy.com/doc/ejp/Internet.pdf">"RMI through firewalls"</a></li>
+    </ul>
+  </li>
+  <li>Libros disponibles en forma electrónica en la biblioteca:
+    <ul>
+     <li>"Java Concurrency in Practice" Brian Goetz, Tim Peierls et al. 2006</li>
+	 <li>"Concurrency: State Models &amp; Java Programs", Jeff Magee, Jeff Kramer 2006</li>
+     <li>"Concurrent Programming in Java: Design Principles and Patterns" Doug Lea 2000</li>
+    </ul>
+  </li>
+</ul>
+<h3>En español</h3>
+<ul>
+  <li>Documentación oficial de Oracle
+    <ul>
+     <li><a href="http://devel.no-ip.org/programming/languages/java/tutorial/essential/concurrency/index.html">Traducción (parcial y bastante mala) del tutorial de Java</a></li>
+    </ul>
+  </li>
+  <li>Libros disponibles en la biblioteca:
+    <ul>
+	  <li>"Programación en Java 5.0", James P. Cohoon, Jack W. Davidson</li>
+    </ul>
+  </li>
+</ul>
+
+<!--
+Logging
+http://logging.apache.org/log4j/2.x/manual/index.html
+-->
+
+</td>
+</tr>
+<tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab6_JavaRMI/PC_lab6.html#"><img src="./6. Invocación de Métodos Remotos en Java (Java RMI)_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<br>
+<br>
+<br>
+
+  
+  
+</body></html>

@@ -1,0 +1,299 @@
+
+<!-- saved from url=(0088)https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab1_SincronizacionEnJava/PC_lab1.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Sincronización básica de hilos en Java</title>
+
+<link rel="stylesheet" href="./1. Sincronización básica de hilos en Java_files/estilo.css" type="text/css">
+</head>  
+<body bgcolor="#FFFFFF" text="#000000" marginwidth="0" marginheight="1" topmargin="1" leftmargin="0" rightmargin="0">
+
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+  <tbody><tr>
+    <td align="center">
+	    <h2>Departamento de Sistemas Informáticos y Computación<br>
+           Facultad de Informática, Universidad Complutense de Madrid</h2>
+		<h2>Programación Concurrente</h2>
+    </td>
+  </tr>
+</tbody></table>
+
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+  <tbody><tr>
+    <td>
+      <center><h3><font color="#0000EE">Práctica 1: Mecanismos básicos de sincronización en Java</font></h3></center>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <center><h3><font color="#0000EE">Utilización de <b><em>synchronized</em></b> para sincronizar hilos concurrentes</font></h3></center><font color="#0000EE">
+    </font></td>
+  </tr>
+</tbody></table>
+<br>
+
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">OBJETIVOS</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./1. Sincronización básica de hilos en Java_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+El objetivo de esta práctica es que el alumno aprenda a sincronizar la ejecución concurrente de hilos utilizando el
+mécanismo básico de Java <em>synchronized</em>.
+<br><br>
+
+</td>
+</tr>
+<tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab1_SincronizacionEnJava/PC_lab1.html#"><img src="./1. Sincronización básica de hilos en Java_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">ENUNCIADO</font><a name="2"></a></b></td>
+    <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./1. Sincronización básica de hilos en Java_files/degradtabla2.jpg" width="236" height="15"></div></td>
+    </tr>
+  </tbody></table>
+</td>
+</tr>
+</tbody></table>
+
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+
+<h3 align="center">Una simulación de un banco</h3>
+
+<p>El fichero <a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab1_SincronizacionEnJava/Banco.java"><tt>Banco.java</tt></a> contiene una simulación simplificada de un
+banco en que intervienen cuatro clases/interfaces principales.
+</p><ul>
+ <li><tt><b>Cuenta</b></tt>, cuyas instancias mantienen saldos de las cuentas individuales e imprimen
+ mensajes sobre las transacciones en las que participan.</li>
+<li><tt><b>Cajero</b></tt>, cuyas instancias manipulan cuentas en nombre de los clientes.</li>
+<li><tt><b>Cliente</b></tt>, cuyas instancias representan clientes del banco. Cada cliente lleva a cabo una 
+ secuencia de reintegros y depósitos (en varias cuentas y usando varios cajeros) en un hilo 
+ separado.</li>
+<li><tt><b>Banco</b></tt>, que contiene el <tt>main</tt> que implementa la simulación.</li>
+</ul>
+<p></p>
+
+<p>Desafortunadamente, la clase <tt>Cajero</tt> no se ha escrito muy cuidadosamente y exhibe
+comportamientos erróneos:
+</p><ul>
+ <li>El método <tt>realizar_reintegro()</tt> no comprueba si hay suficientes fondos disponibles,
+ de modo que a veces da lugar a saldos negativos.</li>
+ <li>Ninguno de los métodos toma en cuenta las posibles acciones de otros hilos.</li>
+</ul>
+<p></p>
+
+<h3>Ejercicio 1: evitar los saldos negativos</h3>
+
+<p>El primer ejercicio consiste en reparar estas deficiencias, usando las construcciones de
+sincronización de hilos de Java (es decir, métodos sincronizados o bloques sincronizados),
+guardando el resultado en un fichero con nombre <tt>Banco1.java</tt>.</p>
+
+<p>En particular:
+ </p><ul>
+  <li>El acceso a las cuentas habrá de estar sincronizado (mediante la construcción Java
+      <tt>synchronized</tt>) de modo que se mantenga la integridad de los saldos.</li>
+  <li>Si tiene lugar una solicitud de reintegro en una cuenta que no tiene fondos suficientes,
+  el reintegro se pospondrá (el cliente habrá de esperar) hasta que algún otro cliente deposite
+  fondos suficientes para que el reintegro proceda (reconociendo que, desde luego, esta
+  solución no es la más realista para un sistema de cajeros).</li>
+</ul>
+<p></p>
+
+<p>En este apartado sólo prodrán modificarse los métodos <tt>realizar_reintegro()</tt> y
+   <tt>realizar_deposito()</tt> de la clase <tt>Cajero</tt>. Ninguna otra clase puede ser
+   modificada.</p>
+<p>El método <tt>realizar_reintegro()</tt> debe imprimir un mensaje por pantalla
+   explicando correctamente la situación cuando se pone en espera y también cuando
+   sale de la espera. Estos mensajes deben identificar el cliente que quiere hacer
+   el reintegro, el cajero que está gestionando la operación y la cuenta de donde
+   se quiere retirar los fondos.</p>
+
+<h3>Ejercicio 2: sincronizar otra parte del código</h3>
+
+<p>Ahora debe mover las sincronizaciones pedidos en el ejercicio anterior al código
+de los métodos <tt>hacer_reintegro</tt> y <tt>hacer_deposito</tt>, hacer los
+retoques necesarios para que funcione (sin olvidar los mensajes apropiados) y guardar
+el resultado en un fichero con nombre <tt>Banco2.java</tt>.
+¿Cuáles son las ventajas y los inconvenientes de esta solución con respecto a la del
+primer apartado?</p>
+
+<p>Si, al final de una traza de ejecución, aparece el mensaje "ERROR: discrepancia
+entre la liquidez calculada a partir de los depositos y reintegros (...) y el total
+de dinero en las cuentas (<tt>CuentaImpl.totalSaldo()</tt>), ¿cuál puede ser la causa?
+¿Cómo se puede arreglar? Recuerde que para evitar que unas sentencias se interfieran,
+se puede imponer la exclusión mútua protegiendoles con el cerrojo implícito de un
+objeto Java (mediante el uso de la palabra clave <tt>synchronized</tt>). Pero
+obsérvese que no tiene por qué ser ningún objeto Java particular; el mecanismo
+puede funcionar con cualquier objeto Java con tal de qué todas las partes implicadas
+utilizan el cerrojo del mismo objeto.
+</p>
+
+<p>Finalmente, ¿qué efecto tendría si declaramos los métodos <tt>hacer_reintegro</tt>
+y <tt>hacer_deposito</tt> como métodos sincronizados?</p>
+
+<br><hr>
+
+<h3>Se pide</h3>
+<ul>
+  <li>Experimentar con distinto número de invocaciones de los métodos
+     <tt>hacer_reintegro</tt> y <tt>hacer_deposito</tt> en los clientes
+     así como con distintos parametros de estos métodos,
+     y también con distintos valores de retardo en los clientes.</li>
+  <li>Implementar los cambios especificados anteriormente, teniendo en cuenta
+     las siguientes indicaciones:
+     <ul>
+	<li>Utilice sólo la cantidad de código sincronizado que sea estrictamente necesario.</li>
+	<li>Comente su código de forma clara y adecuada.</li>
+     </ul>
+  </li>
+</ul>
+<p>
+Por defecto, las prácticas se harán en grupos de dos. Para solicitar hacer esta
+práctica de manera individual, envía un e-mail al profesor cuanto antes.
+</p>
+
+<br><hr>
+
+<h3>Entrega:</h3>
+
+<ul>
+ <li>Breve memoria en PDF que contendrá:
+
+  <ul>
+    <li> los datos de los miembros del grupo de prácticas</li>
+    <li> las respuestas a las preguntas formuladas en los distintos apartados de la práctica</li>
+    <li> una copia del código que ha implementado para los distintos apartados (<em>no es necesario incluir
+         todo el código del programa</em>) y una traza de ejecución del programa <tt>Banco.java</tt> antes de modificar,
+         una traza de ejecución del programa <tt>Banco1.java</tt> y una traza de ejecución
+         del programa <tt>Banco2.java</tt>.)</li>
+  </ul>
+ </li>
+ <li>Los ficheros fuente <tt>Banco1.java</tt> y <tt>Banco2.java</tt></li>
+</ul>
+todo puesto dentro de una sola carpeta llamada <tt>Práctica1</tt>, comprimida con zip
+y subida a Campus Virtual (solo uno del grupo) antes del 8 de marzo del 2013 a las 10:00 horas.<br>
+
+<br><hr><br>
+<b>Consultas:</b> En horas de tutoría. Fuera de este horario deberá formular las preguntas a través de correo
+electrónico (simon.pickin@fdi.ucm.es).
+
+ </td>
+</tr>
+</tbody></table>
+
+
+
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab1_SincronizacionEnJava/PC_lab1.html#"><img src="./1. Sincronización básica de hilos en Java_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+
+
+
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">ENLACES</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./1. Sincronización básica de hilos en Java_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+<h3>En inglés</h3>
+<ul>
+  <li>Documentación oficial de Oracle
+    <ul>
+      <li><a href="http://docs.oracle.com/javase/7/docs/api/">Especificación del API de Java SE7</a></li>
+      <li><a href="http://docs.oracle.com/javase/tutorial/essential/concurrency/procthread.html">Tutorial de Java</a></li>
+      <li><a href="http://docs.oracle.com/javase/tutorial/essential/concurrency/sync.html">Tutorial de Java, parte "Synchronization"</a></li>
+      <li><a href="http://docs.oracle.com/javase/tutorial/essential/concurrency/guardmeth.html">Tutorial de Java, parte "Guarded Blocks"</a></li>
+   </ul>
+  </li>
+  <li>Tutoriales/articulos de IBM DevloperWorks
+    <ul>
+	 <li><a href="http://www.ibm.com/developerworks/java/tutorials/j-threads/">"Introduction to Java threads"</a></li>
+    </ul>
+  </li>
+  <li>Libros disponibles en forma electrónica en la biblioteca:
+    <ul>
+     <li>"Java Concurrency in Practice" Brian Goetz, Tim Peierls 2006</li>
+     <li>"Concurrent Programming in Java: Design Principles and Patterns" Doug Lea 2000</li>
+	 <li>"Concurrency: State Models &amp; Java Programs", Jeff Magee, Jeff Kramer 2006</li>
+     </ul>
+  </li>
+</ul>
+<h3>En español</h3>
+<ul>
+  <li>Documentación oficial de Oracle
+    <ul>
+     <li><a href="http://devel.no-ip.org/programming/languages/java/tutorial/essential/concurrency/index.html">Traducción (parcial y bastante mala) del tutorial de Java</a></li>
+    </ul>
+  </li>
+<!-- demasiados errores en este tutorial
+  <li>Tutorial de chuidiang.com
+    <ul>
+	  <li><a href="http://www.chuidiang.com/java/hilos/hilos_java.php">Hilos en Java</a></li>
+	  <li><a href="http://www.chuidiang.com/java/hilos/sincronizar_hilos_java.php">Sincronización de hilos</a></li>
+	  <li><a href="http://www.chuidiang.com/java/hilos/wait_y_notify.php">Esperando datos: wait() y notify()</a></li>
+    </ul>
+  </li>
+  -->
+  <li>Tutorial de Agustín Froufe (algo anticuado)
+    <ul>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-creacion_y_control_de_threads/3938-141">Creación y control de threads</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-arrancar_y_parar_threads/3938-142">Arrancar y parar threads</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-suspender_y_reanudar_threads/3938-143">Suspender y reanudar threads</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-estados_de_un_thread/3938-144">Estado de un thread</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-scheduling/3938-145">Scheduling</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-prioridades_demonios/3938-146">Prioridades, demonios</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-comunicacion_entre_threads/3938-148">Communicación entre threads</a></li>
+	</ul>
+  </li>
+  <li><a href="http://zarza.usal.es/~fgarcia/docencia/poo/01-02/trabajos/S3T3.pdf">Apuntes de la Universidad de Salamanca</a></li>
+</ul>
+	
+</td>
+</tr>
+<tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab1_SincronizacionEnJava/PC_lab1.html#"><img src="./1. Sincronización básica de hilos en Java_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<br>
+<br>
+<br>
+
+  
+  </body></html>

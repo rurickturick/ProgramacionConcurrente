@@ -1,0 +1,519 @@
+
+<!-- saved from url=(0085)https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab5_UtilidadesJava5y7/PC_lab5.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Concurrencia en Java SE5 y SE7</title>
+
+<link rel="stylesheet" href="./5. Concurrencia en Java SE5 y SE7_files/estilo.css" type="text/css">
+</head>  
+<body bgcolor="#FFFFFF" text="#000000" marginwidth="0" marginheight="1" topmargin="1" leftmargin="0" rightmargin="0">
+
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+  <tbody><tr>
+    <td align="center">
+	    <h2>Departamento de Sistemas Informáticos y Computación<br>
+            Facultad de Informática, Universidad Complutense de Madrid</h2>
+		<h2>Programación Concurrente</h2>
+    </td>
+  </tr>
+</tbody></table>
+
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+  <tbody><tr>
+    <td>
+      <center><h3>Práctica 5: Concurrencia en Java SE5 y SE7</h3>
+    </center></td>
+  </tr>
+</tbody></table>
+
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">OBJETIVOS</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./5. Concurrencia en Java SE5 y SE7_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+
+<p>
+El objetivo de esta práctica es introducir al alumno en algunas de las utilidades de
+concurrencia incluidas en las ediciones estándares de Java en sus versiones 5 y 7.
+</p>
+
+</td>
+</tr>
+<tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab5_UtilidadesJava5y7/PC_lab5.html#"><img src="./5. Concurrencia en Java SE5 y SE7_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">INTRODUCCIÓN</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./5. Concurrencia en Java SE5 y SE7_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+
+<h3>Las utilidades de concurrencia de Java 5</h3>
+
+<p>
+Las construcciones para la programación de aplicaciones multihilo de relativamente
+bajo nivel tales como bloques sincronizados, <tt>Object.wait</tt> y <tt>Object.notify</tt>
+son insuficientes para muchas tareas de programación. En consecuencia, los
+programadores de aplicaciones concurrentes a menudo se ven obligados implementar
+su propias construcciones concurrentes de más alto nivel, lo que conlleva una
+duplicación de trabajo y esfuerzo. Además, es ampliamente conocido que tales
+construcciones son difíciles de definir correctamente y aún más difíciles optimizar,
+de modo que muchas veces las que definen los programadores por su cuenta son
+incorrectas y/o ineficientes. Por consiguiente, la disponibilidad de un conjunto
+estandarizado de utilidades para la construcción de aplicaciones concurrentes
+facilitaría la tarea de programar una amplia variedad de aplicaciones multihilo, a
+la vez de mejorar su calidad.
+</p>
+
+<p>
+En este sentido, en Java 5 se introdujeron los siguientes paquetes de utilidades de
+concurrencia:
+</p><ul>
+  <li><tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/package-summary.html#package_description">java.util.concurrent</a></tt></li>
+  <li><tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/atomic/package-summary.html#package_description">java.util.concurrent.atomic</a></tt></li>
+  <li><tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/package-summary.html#package_description">java.util.concurrent.locks</a></tt></li>
+</ul>  
+a los que
+<a href="http://docs.oracle.com/javase/7/docs/technotes/guides/concurrency/changes7.html">se
+añadieron algunas utilidades más en Java 7</a>. Los paquetes contienen interfaces y clases
+útiles para estilos de programación y aplicaciones concurrentes diversos e incluyen:
+<ul>
+  <li>variables atómicas,</li>
+  <li>cerrojos para fines específicos, barreras, semáforos, variables de condición,</li>
+  <li>colas y otras colecciones diseñadas para el uso en un contexto multihilo</li>
+  <li><em>pools</em> de hilos y marcos de ejecución personalizables</li>
+</ul>
+<p></p>
+
+<p>
+Muchas de las construcciones de estos paquetes se han implementado encima de las
+construcciones para la programación concurrente bien conocidas de Java, basándose
+la mayor parte en los patrones propuestos hace tiempo por Doug Lea y presentados
+en su libro
+"Concurrent Programming in Java: Design Principles and Patterns".
+Sin embargo, también se ha proporcionado unas utilidades de más bajo nivel y,
+en algunos casos, ha sido necesario introducir mejoras en la máquina virtual de
+Java y/o el lenguaje Java para conseguir una semántica correcta y eficiente.
+En particular,
+se introdujeron cambios en el modelo de memoria de Java y en la semántica de las
+palabras clave <tt>volatile</tt> y <tt>final</tt> que tienen implicaciones para
+la programación concurrente.
+</p>
+
+<h3>Las utilidades de concurrencia de Java 7</h3>
+
+<p>
+Los lenguajes de programación, las bibliotecas y los frameworks software
+que se utilizan en un momento dado
+reflejan las plataformas hardware dominantes en ese momento. Ya en el año
+1995 el lenguaje Java incluía primitivas de sincronización tales como
+<tt>synchronized</tt> y <tt>volatile</tt>, y clases de biblioteca tales
+como <tt>Thread</tt>. En aquella epoca, en la que solo las plataformas de
+alta gama ofrecían algo de paralelismo, el uso principal de los hilos fue
+expresar asincronía más que concurrencia, por lo cual los mecanismos
+incluidos en el lenguaje Java fueron adecuados.
+</p>
+<p>
+A medida que bajaba el precio de los sistemas multiprocesador,
+aumentaba el número de aplicaciones que explotaban este paralelismo,
+y las primitivas de concurrencia de bajo nivel proporcionadas por el
+lenguaje y por las bibliotecas se vieron insuficientes. Para cubrir
+estas necesidades, a las bibliotecas de Java en su versión 5 se añadió
+el paquete <tt>java.util.concurrent</tt>. Los mecanismos inluídos en
+este paquete, algunos de los cuales son tratados en la primera parte de esta
+práctica, estaban bien adaptados a aplicaciones que particionaban el
+trabajo procurando que el número de tareas activas no fuese inferior 
+al número (pequeño) de procesadores disponibles, lo que implicaba
+concurrencia de grano bastante gordo.
+</p>
+<p>
+Sin embargo, en la era de los procesadores multicore, sobre todo una vez que
+el número de cores se cuente en cientos o incluso miles, hará falta
+dotar a los lenguajes de programación de mecanismos para describir concurrencia de grano fino,
+con el fin de evitar que algunos procesadores se queden sin tareas que
+ejecutar. Con este propósito, en la versión 7 de Java se incluyeron
+<a href="http://docs.oracle.com/javase/7/docs/technotes/guides/concurrency/changes7.html">el
+framework fork-join y algunas pequeñas adiciones más</a>, que no
+serán las últimas adiciones de esta índole al lenguaje Java.
+</p>
+<p>
+Los principales elementos del framework fork-join son las clases:
+</p>
+<ul>
+  <li><tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ForkJoinPool.html">ForkJoinPool</a></tt></li>
+  <li><tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a></tt></li>
+</ul>
+<p>
+Un <tt>ForkJoinPool</tt> es un
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html">ExecutorService</a></tt>
+para ejecutar <tt>ForkJoinTask</tt>s que emplea la técnica llamada "robo de trabajo"
+(<em>work stealing</em>) &#8208; se se quedan sin tareas, los hilos del pool intentan encontrar y ejecutar subtareas
+creadas por otras tareas activas &#8208; implementada usando las
+<a href="http://docs.oracle.com/javase/6/docs/api/java/util/Deque.html">colas bidireccionales de Java 6</a>.
+Un <tt>ForkJoinTask</tt> es una unidad de computación más ligera que un hilo que puede ser una
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/RecursiveTask.html">RecursiveTask</a></tt>,
+si devuelve un resultado, o una
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/RecursiveAction.html">RecursiveAction</a></tt>,
+si no.
+</p>
+
+</td>
+</tr>
+<tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab5_UtilidadesJava5y7/PC_lab5.html#"><img src="./5. Concurrencia en Java SE5 y SE7_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">ENUNCIADO</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./5. Concurrencia en Java SE5 y SE7_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+
+<h3>Ejercicio 1: la interfaz <tt>ExecutorService</tt></h3>
+
+<p>
+En este ejercicio vamos a escribir un pequeño programa que ilustre el uso de
+la interfaz
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html">ExecutorService</a></tt> y, al mismo tiempo, mida el tiempo que
+se tarde en completar unos cálculos en función del número de hilos creados.
+Para estos fines, nos basta con presentar al <tt>ExecutorService</tt> para
+su ejecución muchas instancias de una única tarea que lleva a cabo unos
+cálculos.
+Recuerde que una tarea que se presenta para su ejecución a un objeto que
+implementa la interfaz
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Executor.html">Executor</a></tt>
+tiene que estar en forma de un objeto que implementa la interfaz
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Runnable.html">Runnable</a></tt>
+o la interfaz
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Callable.html">Callable</a></tt>.
+</p>
+
+<p>
+Como tarea de ejemplo utilizaremos un contador, que simplemente cuenta hasta
+un número grande, <tt>maxCont</tt>, pasado como argumento a su constructor.
+Escriba el código de esta clase, nómbrela <tt>TareaDeCalculo</tt> y guarde
+el código en un fichero.
+</p>
+
+<p>
+Ahora complete el código de la clase que se encuentra en el fichero
+<a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab5_UtilidadesJava5y7/EjemploExecutorService.java"><tt>EjemploExecutorService.java</tt></a>
+haciendo uso de la clase <tt>TareaDeCalculo</tt>. Dada la naturaleza del ejemplo
+ilustrativo de este código, debe recoger las excepciones, pero no hace falta
+implementar un trato adecuado de ellas.
+</p>
+
+<p>
+Compile el programa y ejecútelo con la opción <tt>-Xint</tt> (interpreted-mode
+only). Si quiere mostrar los datos gráficamente, ejecute el programa dirigiendo
+la salida estándar a un fichero nombrado, por ejemplo, <tt>miFichero.datos</tt>
+y utilice, por ejemplo, <tt>gnuplot</tt> en modo no-interactivo con el comando:
+<br>&nbsp; &nbsp;
+  <tt>gnuplot -p -e "set terminal svg; set output 'Hilos.svg';
+      set style data linespoints; plot '<em>miFichero.datos</em>'"</tt>
+<br>
+Lo interesante sería ejecutar el programa con varias CPU <em>multi-core</em>
+con distinto número de procesadores y luego crear un grafo que comparase los
+resultados, por ejemplo, con el comando:
+<br>&nbsp; &nbsp;
+  <tt>gnuplot -p -e "set terminal svg; set output 'Hilos.svg';
+      set style data linespoints; plot '<em>miFichero1.datos</em>',
+	  '<em>miFichero2.datos</em>',... '<em>miFicheroN.datos</em>'"</tt>
+<br>
+Se observerá que para este ejemplo, el número óptimo de
+hilos concurrentes es el número de
+procesadores (cores) disponible. Con menos que este número de hilos no se
+aprovechan los procesadores. Con un programa intensivo en CPU como este
+ejemplo, más que este número de hilos implica más
+cambios de contexto y otras gestiones de hilos. Sin embargo, para tareas
+pesadas, esta gestión no es
+muy significativa por lo que el grafo será casi horizontal a partir de un
+número de hilos igual al número de procesadores.
+</p>
+
+<h3>Ejercicio 2: la interfaz <tt>CompletionService</tt></h3>
+
+<p>
+En este ejercicio vamos a escribir un pequeño programa que ilustre el uso de
+la interfaz
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/CompletionService.html">CompletionService</a></tt>.
+Con este fin, necesitamos presentar
+al <tt>CompletionService</tt> para su ejecución unas tareas que tardan en
+terminarse un tiempo relativamente largo pero variable.
+Recuerde que una tarea que se presenta para su ejecución a un objeto que
+implementa la interfaz
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Executor.html">Executor</a></tt>
+tiene que estar en forma de un objeto que implementa la interfaz
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Runnable.html">Runnable</a></tt>
+o la interfaz
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Callable.html">Callable</a></tt>.
+</p>
+
+<p>
+Al contrario del ejercicio anterior, las tareas no tienen que hacer
+cálculos, solo durar un tiempo. Por tanto, como tarea de ejemplo basta con
+utilizar objetos que simplemente duermen un tiempo aleatorio, por ejemplo
+con la instrucción:
+<br>&nbsp; &nbsp;
+  <tt>Thread.sleep(Math.abs(new Random().nextLong() % 5000));</tt><br>
+antes de devolver como resultado el nombre del hilo actual. En este
+ejercicio, los hilos habrán sido creados en un <em>thread pool</em> y los
+nombres serán los elegidos por defecto por el método
+<tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Executors.html#defaultThreadFactory%28%29">defaultThreadFactory</a></tt>.
+Escriba el
+código de esta clase, recogiendo y tratando la excepción posible, nómbrela
+<tt>TareaLarga</tt> y guarde el código en un fichero.
+</p>
+
+<p>
+Ahora complete el código de la clase que se encuentra en el fichero
+<a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab5_UtilidadesJava5y7/EjemploCompletionService.java"><tt>EjemploCompletionService.java</tt></a>
+haciendo uso de la clase <tt>TareaLarga</tt>. Dada la naturaleza de ejemplo
+ilustrativo de este código, debe recoger las excepciones pero no hace falta
+implementar un trato adecuado de ellas. ¿Qué pasaría con este código si una
+de las tareas no terminase (o tardase demasiado en terminar)?
+</p>
+
+<p>
+Compile el programa, ejecútelo varias veces y observe el resultado.
+</p>
+
+<h3>Ejercicio 3: el marco fork-join</h3>
+<p>
+En este ejercicio, vamos a convertir una aplicación que utiliza un <tt>ThreadPool</tt>
+de Java 5 en una aplicación que utilice el <tt>ForkJoinPool</tt> de Java 7. La
+aplicación original hace uso de la biblioteca
+<a href="http://sourceforge.net/projects/htmlparser/">HtmlParser</a>
+y consta de una interfaz:
+</p><ul>
+  <li><tt><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab5_UtilidadesJava5y7/ProcesadorEnlaces.java">ProcesadorEnlaces.java</a></tt></li>
+</ul>
+<p>una clase que implementa esta interfaz:</p>
+<ul>
+  <li><tt><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab5_UtilidadesJava5y7/BuscadorEnlaces.java">BuscadorEnlaces.java</a></tt></li>
+</ul>
+<p>y la clase principal:</p>
+<ul>
+  <li><tt><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab5_UtilidadesJava5y7/RastreadorWeb6.java">RastreadorWeb6.java</a></tt></li>.
+</ul>
+<p>
+Después de estudiar el código e instalar la biblioteca <tt>HtmlParser</tt>, compile
+y ejecute la aplicación.
+</p>
+<p>
+Ahora modifique las clases <tt>BuscadorEnlaces</tt> y <tt>RastreadorWeb6</tt>
+para que utilicen el <tt>ForkJoinPool</tt> de Java 7. Nombre a las clases
+resultantes <tt>BuscadorEnlacesAction</tt> y <tt>RastreadorWeb7</tt>
+respectivamente y guárdelas en un fichero. Evidentemente, hará falta una 
+instalación de Java 7 para compilar la nueva aplicación.
+</p>
+
+<p><em>Pistas sobre la clase <tt>BuscadorEnlacesAction</tt></em>
+</p><ul>
+  <li><tt>BuscadorEnlacesAction</tt> debe extender a <tt>RecursiveAction</tt></li>  
+  <li>El método <tt>rastrearPagina()</tt> se convierte en el método
+      <tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/RecursiveAction.html#compute%28%29">compute()</a></tt></li>
+  <li>Se utiliza un <tt>ArrayList</tt> de <tt>RecursiveAction</tt> en vez de un <tt>ArrayList</tt>
+	  de <tt>String</tt>.</li>
+  <li>En vez de llamar a <tt>encolarEnlace</tt> se utiliza
+	  <tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ForkJoinTask.html#invokeAll%28java.util.concurrent.ForkJoinTask,%20java.util.concurrent.ForkJoinTask%29">invokeAll()</a></tt></li>
+</ul>
+
+<h3 align="center">Observaciones</h3>
+<p>
+Se ha elegido este ejemplo por ser una aplicación pequeña pero interesante
+que muestra bien la facilidad con la que se puede cambiar una
+aplicación implementada con un pool de hilos de Java5 a una aplicación
+implementada con un <tt>ForkJoinPool</tt> de Java7. Sin embargo, no es el
+ejemplo más idoneo del uso del framework fork-join ya que utiliza E/S
+bloqueante. Por otro lado, no tiene la estructura típica de los algorítmos
+dividir-por-vencer &#8208; los algorítmos que se prestan mejor al uso del
+framework fork-join &#8208; eso es:
+</p>
+<pre>Resultado ejecutar(Tarea tarea) {
+	if (tarea es pequeña) {
+		procesarla de manera secuencial
+	}
+	else {
+		dividir la tarea en subtareas
+		invocar a ejecutar() para cada subtarea (en paralelo)
+		integrar los resultados de todas las subtareas 
+	}
+}
+</pre>
+
+<br>
+<hr>
+<br>
+<b>Entrega:</b> 
+
+La entrega consta de los siguientes elementos:
+<ul>
+	<li>los ficheros fuentes:
+	    <ul>
+		   <li>En un directorio llamado Ejercicio1:
+		       <tt>TareaDeCalculo.java</tt>, <tt>EjemploExecutorService.java</tt>,</li>
+	       <li>En un directorio llamado Ejercicio2:
+		       <tt>TareaLarga.java</tt> y <tt>EjemploCompletionService.java</tt>,</li>
+	       <li>En un directorio llamado Ejercicio3:
+		       <tt>BuscadorEnlacesAction.java</tt> y <tt>RastreadorWeb7.java</tt>.</li>
+	    </ul>
+    </li>
+	<li>una muy breve memoria, con los nombres de los miembros del grupo de prácticas,
+	    explicando sus soluciones tal como pedidas en los distintos apartados.
+	</li>
+</ul>
+todo puesto dentro de una sola carpeta llamada <tt>Práctica5</tt>, comprimida con zip
+y subida a Campus Virtual antes de las 10h del 10 de mayo del 2013.<br>
+<br><hr><br>
+<b>Consultas:</b> En horas de tutoría. Fuera de este horario deberá formular las
+   preguntas a través de correo electrónico (<tt>simon.pickin@fdi.ucm.es</tt>).
+
+</td></tr><tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab5_UtilidadesJava5y7/PC_lab5.html#"><img src="./5. Concurrencia en Java SE5 y SE7_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center">
+<tbody><tr>
+<td bgcolor="#000033">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+    <tbody><tr bgcolor="#CCCCCC">
+    <td height="13" bgcolor="#CCD0D6"><b class="menut">&nbsp;<font color="#000033">ENLACES</font><a name="2"></a></b></td>
+ <td height="13" bgcolor="#CCD0D6"> <div align="right"><img src="./5. Concurrencia en Java SE5 y SE7_files/degradtabla2.jpg" width="236" height="15"></div>
+ </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br><table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
+
+<tbody><tr>
+<td>
+<h3>En inglés</h3>
+<ul>
+  <li>Documentación oficial (de Oracle o del Java Community Process)
+    <ul>
+	 <li><a href="http://docs.oracle.com/javase/7/docs/api/">Especificación del API de Java SE7</a></li>
+     <li><a href="http://docs.oracle.com/javase/tutorial/essential/concurrency/procthread.html">Tutorial de Java</a></li>
+	 <li><a href="http://docs.oracle.com/javase/tutorial/essential/concurrency/highlevel.html">Tutorial Java, parte SE5 y SE7</a></li>
+     <li><a href="http://docs.oracle.com/javase/7/docs/technotes/guides/concurrency/overview.html">Visión general de las utilidades de concurrencia en Java SE7</a></li>
+     <li><a href="http://docs.oracle.com/javase/7/docs/technotes/guides/concurrency/index.html">Documentación sobre las utilidades de concurrencia en Java SE7</a></li>
+<!--
+     <li><a href="http://www.cs.umd.edu/~pugh/java/memoryModel/jsr-133-faq.html">FAQ sobre el modelo de memoria de Java 5</a></li>
+     <li><a href="http://www.cs.umd.edu/~pugh/java/memoryModel/">Más información sobre el modelo de memoria de Java 5</a></li>
+-->
+    </ul>
+  </li>
+  <li>Tutoriales/articulos de IBM DevloperWorks
+    <ul>
+	 <li><a href="http://www.ibm.com/developerworks/java/tutorials/j-threads/">"Introduction to Java threads"</a></li>
+ 	 <li><a href="http://www.ibm.com/developerworks/library/j-5things4/index.html">"5 things you didn't know about ... java.util.concurrent, Part 1"</a></li>
+ 	 <li><a href="http://www.ibm.com/developerworks/library/j-5things5/index.html">"5 things you didn't know about ...java.util.concurrent, Part 2"</a></li>
+	 <li><a href="http://www.ibm.com/developerworks/library/j-jtp0730/index.html">"Thread pools and work queues"</a>
+	 <ul><li>Basado en el paquete <tt>util.concurrent</tt> de Doug Lea en vez de en <tt>java.util.concurrent</tt></li></ul>
+	 </li><li><a href="http://www.ibm.com/developerworks/library/j-jtp11137/">"Stick a fork in it, Part 1"</a></li>
+	 
+	 </ul>
+  </li>
+  <li>Libros disponibles en forma electrónica en la biblioteca:
+    <ul>
+     <li><a href="http://proquest.safaribooksonline.com/0321349601">"Java Concurrency in Practice"</a> Brian Goetz, Tim Peierls et al. 2006</li>
+	 <li><a href="http://proquest.safaribooksonline.com/9780470093559">"Concurrency: State Models &amp; Java Programs"</a>, Jeff Magee, Jeff Kramer 2006</li>
+     <li><a href="http://proquest.safaribooksonline.com/0201310090">"Concurrent Programming in Java: Design Principles and Patterns"</a> Doug Lea 2000</li>
+    </ul>
+  </li>
+</ul>
+<h3>En español</h3>
+<ul>
+  <li>Documentación oficial de Oracle
+    <ul>
+     <li><a href="http://devel.no-ip.org/programming/languages/java/tutorial/essential/concurrency/index.html">Traducción (parcial y bastante mala) del tutorial de Java</a></li>
+    </ul>
+  </li>
+  <li>Tutoriales/articulos de IBM DevloperWorks
+    <ul>
+     <li><a href="http://www.ibm.com/developerworks/ssa/library/j-5things15/index.html">"5 cosas que no sabía sobre...programación Java multithread"</a></li>
+     <li><a href="http://www.ibm.com/developerworks/ssa/java/library/j-5things4/index.html">"5 cosas que usted no sabía acerca de... java.util.concurrent, Parte 1"</a></li>
+     <li><a href="http://www.ibm.com/developerworks/ssa/java/library/j-5things5/index.html">"5 cosas que usted no sabía acerca de... java.util.concurrent, Parte 2"</a></li>
+    </ul>
+  </li>
+  <li>Tutorial de Agustín Froufe
+    <ul>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-creacion_y_control_de_threads/3938-141">Creación y control de threads</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-arrancar_y_parar_threads/3938-142">Arrancar y parar threads</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-suspender_y_reanudar_threads/3938-143">Suspender y reanudar threads</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-estados_de_un_thread/3938-144">Estado de un thread</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-scheduling/3938-145">Scheduling</a></li>
+	  <li><a href="http://www.wikilearning.com/tutorial/tutorial_de_java-prioridades_demonios/3938-146">Prioridades, demonios</a></li>
+    </ul>
+  </li>
+  <li><a href="http://zarza.usal.es/~fgarcia/docencia/poo/01-02/trabajos/S3T3.pdf">Apuntes de la Universidad de Salamanca sobre hilos en Java</a></li>
+  <li>Libros disponibles en la biblioteca:
+    <ul>
+	  <li>"Programación en Java 5.0", James P. Cohoon, Jack W. Davidson</li>
+    </ul>
+  </li>
+</ul>
+
+</td>
+</tr>
+<tr>
+<td colspan="4" class="peq">
+<div align="right"><a href="https://cv2.sim.ucm.es/moodle/file.php/32028/Labs/Lab5_UtilidadesJava5y7/PC_lab5.html#"><img src="./5. Concurrencia en Java SE5 y SE7_files/flechaup.gif" width="12" height="18" border="0"></a></div>
+</td>
+</tr>
+</tbody></table>
+<br>
+<br>
+<br>
+<br>
+
+  
+  </body></html>
